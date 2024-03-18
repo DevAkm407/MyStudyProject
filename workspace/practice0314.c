@@ -332,15 +332,15 @@
 // }
 
 //18번
-#include<stdio.h>
-int main(){
-    int Rabund=5;
-    int count=1;
-    while(Rabund<150){
-        Rabund-=count;
-        Rabund*=2;
-        count++;
-    }
-    printf("%d명이고%d주 걸렸다.",Rabund,count);
-    return 0;
-}
+// #include<stdio.h>
+// int main(){
+//     int Rabund=5;
+//     int count=1;
+//     while(Rabund<150){
+//         Rabund-=count;
+//         Rabund*=2;
+//         count++;
+//     }
+//     printf("%d명이고%d주 걸렸다.",Rabund,count);
+//     return 0;
+// }
