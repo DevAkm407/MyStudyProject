@@ -16,6 +16,7 @@ int main(void)
     int lv=1;
     int death=0;
     int expindex[5];
+    int ending=0;
     while (1)
     {
         gameCount++;
@@ -54,16 +55,32 @@ int main(void)
 
                 exp = exp+(choexp*bonus);
              //   srand(time(NULL));
-            double randexp = (rand() % 71) + 180;// ( 250 - 180 + 1 ) + 180; // 250-180= 70+1 = 71 +180 ) 0~70 + 180   1.8~2.5
-            double plusexp = 0;
+          //  double randexp = (rand() %71) + 180;// ( 250 - 180 + 1 ) + 180; // 250-180= 70+1 = 71 +180 ) 0~70 + 180   1.8~2.5
+            
+            double plusexp = 15000;
             
 
             if ( exp < 0 ){
                 lv--;
-                expBar=expBar/randexp;   
+                expBar=expBar-plusexp;   
                 if(lv<0){
-                    printf("마이너스래~언니 드러와 ~~~~\n");
-                printf("%dlv로 사망하셨습니다.\n",lv);
+                printf("훈련 중에 공룡이 경험치를 획득하지 못하고 사망했습니다.\n\n");
+                printf("                 @@@@@                  \n");                
+                printf("              @@       @\n");
+                printf("                @@@@@@@                \n");
+                printf("\t                                   [!Knock Down!] \n");
+                printf("               @@@@@@@@\n");
+                printf("             @@@@@@@@@@@@      \t[!Knock Down!]\n");
+                printf("             @@@  @@@@@@@\n");
+                printf("             @@@@@@@@\n");
+                printf("             @@@@@@@@@@@       ┏━━━━━━━━━━━━━━━━┓\n");
+                printf("     *      @@@@@@@@           ┃                ┃\n");
+                printf("     @     @@@@@@@@@@@@@@      ┃ !!game  over!! ┃\n");
+                printf("      @@  @@@@@@@@@@@   @      ┃                ┃\n");
+                printf("         @@@@@@@@@@@@@         ┗━━━━━━━━━━━━━━━━┛\n");
+                printf("          @@@@@@@@@@@           공룡이 획득한 총 경험치 : %d\n", exp);
+                printf("          @@        @@          공룡이 생존했던 턴 수 : %d\n", gameCount);
+                printf("         @@@@      @@@          당신은 나쁜 아버지였습니다.\n");
                 death++;
                 break;
                 }
@@ -73,27 +90,49 @@ int main(void)
             { 
                 lv += 1;
                 //exp = exp - expBar;
-
-                plusexp = randexp  / 100.0;
-                printf("%f plusexp의값\n",plusexp);
-                expBar = expBar * plusexp; //레벨업시 필요한 경험치량 수식이 틀렸었어서 고침
+                // plusexp = randexp  / 100.0;
+                //printf("%f plusexp의값\n",plusexp);
+                expBar = expBar + plusexp; //레벨업시 필요한 경험치량 수식이 틀렸었어서 고침
                
                 printf("[Level up!]레벨 %d 가 되었습니다!\n",lv);
                 
             }
 
             if (lv == 99 )
-                printf("만랩됐어! 언니 드러와");  
+              {
+                printf("[Level up!]\n레벨 %d 가 되었습니다!\n",lv);
+                printf("\n               @@@@@@@@@@\n");
+                printf("             @@@@@@@@@@@@@@    \t [!!Ending!!]\n");
+                printf("             @@@  @@@@@@@@@\n");
+                printf("             @@@@@@@@@@@@@@\n");
+                printf("             @@@@@@@@@          ┏━━━━━━━━━━━━━━━━┓\n");
+                printf("     *      @@@@@@@@@@@@        ┃                ┃\n");
+                printf("     @     @@@@@@@@@            ┃ !!축하합니다!! ┃\n");
+                printf("     @@  @@@@@@@@@@@@@@@@@      ┃                ┃\n");
+                printf("     @@@@@@@@@@@@@@@@@   @      ┗━━━━━━━━━━━━━━━━┛\n");
+                printf("     @@@@@@@@@@@@@@@@@\n");
+                printf("      @@@@@@@@@@@@@@@@           공룡이 획득한 총 경험치 : %d\n", exp);
+                printf("       @@@@@@@@@@@@@@            공룡이 진행한 총 훈련 횟수 : %d\n", gameCount);
+                printf("         @@@@@@@@@@@             당신은 좋은 아버지였습니다.\n");
+                printf("         @@      @@\n");
+                printf("         @@@@    @@@@\n");
+                
+                exit(1);
+                
+            }
         
         
-        
+       
+        if(death>0)
+        exit(1);
+    
     }
-    if(death>0){
-        break;
-    }
+    
+ 
+    
     
     int sum=0;
-    
+    int lvexp=(int)expBar-exp;    
     for (int i = 0; i < 5; i++)
     {
          sum+=expindex[i];
@@ -102,21 +141,51 @@ int main(void)
     
     printf("이벤트 경험치 배율은 %f 입니다.\n",bonus);
     
-    printf("얻은 총경험치는 %d입니다.\n현재 레벨업시 필요한 경험치:%d\n 현재 레벨은 %d입니다.",(int)(sum*bonus), (int)expBar-exp,lv);
+    if(lvexp<0)
+        lvexp=-1*lvexp;
+    printf("얻은 총경험치는 %d입니다.\n현재 레벨업시 필요한 경험치:%d\n  현재 레벨업 기준 경험치 %lf\n 현재 레벨은 %d입니다.\n",(int)(sum*bonus), lvexp,expBar,lv);
     
     sum=0;
-    
+    int sbrk=0;
     
     printf("다음 턴을 진행하시겠습니까? (Y/N)\n");
-    
-    scanf("%c", &input);  
+    while(1)
+    {    
+        input=getchar();
+        switch (input)
+        {
+        case '\n':
+                    printf("다음 턴을 진행하시겠습니까? (Y/N)\n");
+                    printf("문자를 입력해주세요.\n");
+                    break;
         
-    if(input=='n'||input=='N'){
-        printf("얻은 총경험치는 %d입니다.\n현재 레벨은 %d입니다.\n현재까지 진행한 턴수는:%d번입니다.\n",(int)(exp) , lv , gameCount);
+        case 'y':
+        case 'Y': 
+                sbrk++;
+                while ((input=getchar())!='\n')
+                    {      
+                    }
+                break;
+        
+        case 'n':
+        case 'N': 
+            ending++;
+            while ((input=getchar()) !='\n'){}
+            break;
+        default:
+            printf("y 또는 n 을 입력해주세요.\n");
+            break;
+        
+        }
+       if(sbrk>0)
+            break; 
+       if(ending>0)
+            break;    
+    }
+    if(ending>0)
         break;
     }
-    getchar(); 
-    }
+    
 
 
  return 0;   
