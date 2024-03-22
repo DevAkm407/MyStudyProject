@@ -166,7 +166,7 @@ for (int i = 0; i < size; i++)
         sum=0;
         for (int i = 0; i < size; i++) //  '/'빙고 검출
         {
-           sum+=handsup[i][4-i];
+           sum+=handsup[i][(size-1)-i];
            
         }
         if(sum==0){
