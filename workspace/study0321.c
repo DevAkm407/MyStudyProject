@@ -137,7 +137,7 @@
 
 #include<stdio.h>
 
-void reverse(int* p);
+void reverse(int* p,int len);
 
 int main()
 {
@@ -268,23 +268,22 @@ int main()
     //     printf("%d\n",a[i]);
     // }
    
-    int a[10]={1,2,3,4,5,6,7,8,9};
-    long b=1;
-    reverse(a);
-    int* p=&a[0];
-    for(int i = 0;  i<sizeof a/sizeof a[0]-1;i++){
-        printf("%d\n",a[i]); 
-        }
-    return 0;
-}
+//     int a[10]={1,2,3,4,5,6,7,8,9,10};
+//     long b=1;
+//     reverse(a,sizeof a/sizeof a[0]);
+//     for(int i = 0;  i<sizeof a/sizeof a[0];i++){
+//         printf("%d\n",a[i]); 
+//         }
+//     return 0;
+// }
 
-void reverse(int* p)
-{
-    int k=p[0];
-    for (int i = 0; i <sizeof p/sizeof p[0] -1 ; i++)
-    {
-        p[i]=p[i+1];\
-    }
-      p[sizeof p/sizeof p[0]-1] =k;
+// void reverse(int* p,int len)
+// {
+//     int k=p[0];
+//     for (int i = 0; i <len-1 ; i++)
+//     {
+//         p[i]=p[i+1];
+//     }
+//     p[len-1] =k;
     
-}
+// }
