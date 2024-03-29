@@ -1,64 +1,85 @@
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct list list;
-void listopen(list w );
-list listappend(list w,int b);
-void listfree(list w);
+void listopen(list* w );
+list* listappend(list* w,int b);
+list* listsort(list* w);
+void listfree(list* w);
+
 struct data
 {
     list* address;
     list* origin;
     int a;
-    float b;
-    double c;    
-}data;
+    
+    }data;
+
 struct list
 {
 int count;
 struct data data;
-
 };
-
 
 int main()
 {
-    list test;
-    listopen(test);
-    test.data.a=5;
-    test=listappend(test,10);
- 
+    list a;
+    list* w=&a;
+    w->data.a=1;
+    listopen(w);
+    while(1){
+        char a;
+        printf("숫자를 넣을까요? Y OR N  ");
+        a=getchar();
+        if(a=='Y'||a=='y')
+        {
+            int i;
+            printf("어떤숫자를 넣을까요?");
+            scanf("%d",&i);
+            w=listappend(w,i);
+        }
+        else if(a=='N'||a=='n')
+            break;
+        while(getchar()!='\n')
+            continue;        
+    }
+    printf("카운트:%d\n",w->count);
+    for (int i = 0; i <= w->count; i++)
+    {
+        w= i==0 ? w->data.origin: w->data.address;
+        printf("%d\n",w->data.a); 
+    }
+    listfree(w);
+
     return 0;
 }
 
-void listopen(list w)
+void listopen(list* w)
 {
-    list* a=&w;  
-    a->count=0;
-    a->data.address=a;
-    a->data.origin=a;
+    w->count=1;
+    w->data.address=NULL;
+    w->data.origin=w;
 }
-list listappend(list w,int b)
+
+
+list* listappend(list* w,int b)
 {
-    list* a=&w;
-    a->count++;
-    list* c=a->data.address;
-    a=(list*)malloc(sizeof(list));
-    c->data.address=a;
-    a->data.origin=c->data.origin;
+    list* a=(list*)malloc(sizeof(list));
+    listopen(a);
+    a->data.origin=w->data.origin;
+    w->data.address=a;
+    a->count=w->count+1; //시작이 1 그다음 카운트는 2 그다음카운트는 3 그다음 카운트는 4
     a->data.a=b;
-return *(w.data.origin);
-}
+   return a;
+}   
 
-void listfree(list w)
+void listfree(list* w)
 {
-    list* a=&w;
-    for(int i=0;i< a->count;i++)
+    list* c=w->data.origin;
+    list *a=c->data.address;
+    for (int i = 0; i <= w->count; i++)
     {
-        if(a->data.address !=NULL){
         list* b=a->data.address;
-        free(a);
-        a=b;
-        }
-    }
-
+        a=b->data.address;
+        free(b);
+    }    
 }
