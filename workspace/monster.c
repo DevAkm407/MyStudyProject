@@ -2,66 +2,88 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <termios.h>
+#include <unistd.h>
 //맵구현+몬스터 배치  어려움(동적할당 사용함)(광민)
-typedef struct boki
+typedef struct Boki
 {
     int fhp;
     int chp;
+    int gold;
     int damage;
-}boki;
+}Boki;
 
-struct oaks_warrior
+struct Oaks_warrior
 {
     int damage;
     int hp;
     int gold;
 };
 
-struct zombie
+struct Zombie
 {
     int damage;
     int hp;
     int gold;
 };
 
-struct ghoul
+struct Ghoul
 {
     int damage;
     int hp;
     int gold;
 };
 
-struct skeleton
+struct Skeleton
 {
     int damage;
     int hp;
     int gold;
 };
 
-struct spartoi
+struct Spartoi
 {
     int damage;
     int hp;
     int gold;
 };
 
-struct student
+struct Student
 {
-    int name;
+    char* name;
     int damage;
     int hp;
     int gold;
 };
 
-typedef struct monster
+struct Baphomet{
+    int hp;
+    int damage;
+};
+
+struct lee{
+    int hp;
+    int damage;
+};
+
+struct ryu
 {
-   struct oaks_warrior oaks_warrior;
-   struct zombie zombie;
-   struct ghoul ghoul;
-   struct skeleton skeleton;
-   struct spartoi spartoi;
-   struct student hero;
-}monster;
+    int hp;
+    int damage;
+};
+
+typedef struct Monster
+{
+   struct Oaks_warrior oaks_warrior;
+   struct Zombie zombie;
+   struct Ghoul ghoul;
+   struct Skeleton skeleton;
+   struct Spartoi spartoi;
+   struct Student hero;
+   struct Baphomet Baphomet;
+   struct lee boss;
+   struct ryu realboss;
+}Monster;
 
 struct npc
 {
@@ -79,35 +101,35 @@ struct firstfloor
 {
 int firstfloormaps[50][50];
 int monstermaps[50][50];
-monster* first;
+Monster* first;
 };
 
 struct secondfloor
 {
 int secondfloormaps[50][50];
 int monstermaps[50][50];
-monster* second;
+Monster* second;
 };
 
 struct thirdfloor
 {
 int thirdfloormaps[50][50];
 int monstermaps[50][50];
-monster* third;
+Monster* third;
 };
 
 struct fourthfloor
 {
 int fourthfloormaps[50][50];
 int monstermaps[50][50];
-monster* fourth;
+Monster* fourth;
 };
 
 struct fifthfloor
 {
 int fifthfloormaps[50][50];
 int monstermaps[50][50];
-monster* fifth;
+Monster* fifth;
 };
 
 typedef struct maps
@@ -120,12 +142,12 @@ struct thirdfloor thirdfloor;
 struct fourthfloor fourthfloor;
 struct fifthfloor fifthfloor;
 }maps;
-
+enum monters {empty,nomal,students,baphomet,lee,ryu};
 //function
 maps* MapsInitialization(maps*);
 maps* MapsReallocation(maps*);
-monster* MonsterInitialization(monster*);
-monster* MonterRegenerative(monster*,boki* user,int);
+Monster* MonsterInitialization(Monster*);
+Monster* MonterRegenerative(Monster*,Boki*,int);
 maps* MonsterMapsRegenerative(maps*,int);
 int main (void)
 {
@@ -149,7 +171,7 @@ maps* MapsInitialization(maps* mapspointer)
 }
 
 
-monster* MonsterInitialization(monster* imonster)
+Monster* MonsterInitialization(Monster* imonster)
 {
     srand(time(NULL));
     
@@ -169,10 +191,10 @@ monster* MonsterInitialization(monster* imonster)
     imonster->spartoi.damage = (rand()%44)+32;   
 }
 
-monster* MonterRegenerative(monster* rm,boki* user,int floor)
+Monster* MonterRegenerative(Monster* rm,Boki* user,int floor)
 {
     srand(time(NULL));
-    char* name[27]={"강진영","권철민","김건","김민아","김성근",
+    char* name[28]={"강진영","권철민","김건","김민아","김성근",
     "김승수","김경곤","김재신","김혜빈","노주영","박민건","박선후"
     ,"박장미","박희정","서훈","안광민","오은지","유시온","이동준",
     "이준호","이은승","이준호","이철","임석현","조대정","조세빈",
@@ -213,6 +235,12 @@ monster* MonterRegenerative(monster* rm,boki* user,int floor)
         rm->hero.name=name[rand()%28];
         rm->hero.hp= user->chp * 2;
         rm->hero.damage=(rand()%201)+100;
+        rm->Baphomet.hp=user->chp*5;
+        rm->Baphomet.damage=(rand()%271)+180;
+        rm->boss.hp=user->chp*7;
+        rm->boss.damage=(rand()%221)+330;
+        rm->realboss.hp=user->chp*10;
+        rm->realboss.damage=(rand()%801)+500;
         break;
     default:
         break;
@@ -231,15 +259,14 @@ maps* MonsterMapsRegenerative(maps* monmap,int floor)
             {
                 int mmr=rand()%100;
                 if(mmr>=70)
-                    monmap->firstfloor.monstermaps[i][j]=2;
+                    monmap->firstfloor.monstermaps[i][j]=students;
                 else if(mmr<=50)
-                    monmap->firstfloor.monstermaps[i][j]=1;
+                    monmap->firstfloor.monstermaps[i][j]=nomal;
                 else
-                    monmap->firstfloor.monstermaps[i][j]=0;
+                    monmap->firstfloor.monstermaps[i][j]=empty;
             }
             
         }
-        
         break;
     
    case 2: 
@@ -249,11 +276,11 @@ maps* MonsterMapsRegenerative(maps* monmap,int floor)
             {
                 int mmr=rand()%100;
                 if(mmr>=70)
-                    monmap->secondfloor.monstermaps[i][j]=2;
+                    monmap->secondfloor.monstermaps[i][j]=students;
                 else if(mmr<=50)
-                    monmap->secondfloor.monstermaps[i][j]=1;
+                    monmap->secondfloor.monstermaps[i][j]=nomal;
                 else
-                    monmap->secondfloor.monstermaps[i][j]=0;
+                    monmap->secondfloor.monstermaps[i][j]=empty;
             }
             
             
@@ -267,11 +294,11 @@ maps* MonsterMapsRegenerative(maps* monmap,int floor)
             {
                 int mmr=rand()%100;
                 if(mmr>=70)
-                    monmap->thirdfloor.monstermaps[i][j]=2;
+                    monmap->thirdfloor.monstermaps[i][j]=students;
                 else if(mmr<=50)
-                    monmap->thirdfloor.monstermaps[i][j]=1;
+                    monmap->thirdfloor.monstermaps[i][j]=nomal;
                 else
-                    monmap->thirdfloor.monstermaps[i][j]=0;
+                    monmap->thirdfloor.monstermaps[i][j]=empty;
             }
             
             
@@ -285,16 +312,34 @@ maps* MonsterMapsRegenerative(maps* monmap,int floor)
             {
                 int mmr=rand()%100;
                 if(mmr>=70)
-                    monmap->fourthfloor.monstermaps[i][j]=2;
+                    monmap->fourthfloor.monstermaps[i][j]=students;
                 else if(mmr<=50)
-                    monmap->fourthfloor.monstermaps[i][j]=1;
+                    monmap->fourthfloor.monstermaps[i][j]=nomal;
                 else
-                    monmap->fourthfloor.monstermaps[i][j]=0;
+                    monmap->fourthfloor.monstermaps[i][j]=empty;
             }
         }
         break;
     case 5: 
-    
+        for (int i = 0; i < 50; i++)
+        {
+            for (int j = 0; j < 50; j++)
+            {
+                int mmr=rand()%100;
+                if(mmr>=70)
+                    monmap->fifthfloor.monstermaps[i][j]=students;
+                else if(mmr>=30||mmr<=50)
+                    monmap->fifthfloor.monstermaps[i][j]=nomal;
+                else if(mmr>=51 || mmr<=60)
+                    monmap->fifthfloor.monstermaps[i][j]=baphomet;
+                else if(mmr>=61 || mmr<=65)
+                    monmap->fifthfloor.monstermaps[i][j]=lee;
+                else if (mmr>=66||mmr<=69)
+                    monmap->fifthfloor.monstermaps[i][j]=ryu;
+                else 
+                    monmap->fourthfloor.monstermaps[i][j]=empty;
+            }
+        }
     break;
    default:
         fputs("floor 값이 이상합니다!!!",stdin);
