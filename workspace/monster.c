@@ -44,6 +44,7 @@ struct spartoi
     int hp;
     int gold;
 };
+
 struct student
 {
     int name;
@@ -51,7 +52,6 @@ struct student
     int hp;
     int gold;
 };
-
 
 typedef struct monster
 {
@@ -62,10 +62,12 @@ typedef struct monster
    struct spartoi spartoi;
    struct student hero;
 }monster;
+
 struct npc
 {
     /* data */
 };
+
 struct town
 {
 struct npc npc;
@@ -108,8 +110,6 @@ int monstermaps[50][50];
 monster* fifth;
 };
 
-
-
 typedef struct maps
 {
 
@@ -120,8 +120,6 @@ struct thirdfloor thirdfloor;
 struct fourthfloor fourthfloor;
 struct fifthfloor fifthfloor;
 }maps;
-
-
 
 //function
 maps* MapsInitialization(maps*);
@@ -174,35 +172,45 @@ monster* MonsterInitialization(monster* imonster)
 monster* MonterRegenerative(monster* rm,boki* user,int floor)
 {
     srand(time(NULL));
+    char* name[27]={"강진영","권철민","김건","김민아","김성근",
+    "김승수","김경곤","김재신","김혜빈","노주영","박민건","박선후"
+    ,"박장미","박희정","서훈","안광민","오은지","유시온","이동준",
+    "이준호","이은승","이준호","이철","임석현","조대정","조세빈",
+    "황운하","황은비"};
     switch (floor)
     {
     case 1:
         rm->oaks_warrior.hp = (rand() % 51 )+50;
         rm->oaks_warrior.damage = (rand() % 6) +10;
+        rm->hero.name=name[rand()%28];
         rm->hero.hp= user->chp * 2;
         rm->hero.damage=(rand()%201)+100;
         break;
     case 2:
         rm->zombie.hp= (rand() % 131) +50;
         rm->zombie.damage =(rand() % 14) +17;
+        rm->hero.name=name[rand()%28];
         rm->hero.hp= user->chp * 2;
         rm->hero.damage=(rand()%201)+100;
         break;
     case 3:
         rm->ghoul.hp=(rand() % 61) +120;
         rm->ghoul.damage = (rand() % 26)+20;
+        rm->hero.name=name[rand()%28];
         rm->hero.hp= user->chp * 2;
         rm->hero.damage=(rand()%201)+100;
         break;
     case 4:
         rm->skeleton.hp = (rand() % 61)+200;
         rm -> skeleton.damage =(rand() % 28)+28;
+        rm->hero.name=name[rand()%28];
         rm->hero.hp= user->chp * 2;
         rm->hero.damage=(rand()%201)+100;
         break;
     case 5:
         rm->spartoi.hp =(rand()% 101)+260;
         rm->spartoi.damage = (rand()%44)+32;   
+        rm->hero.name=name[rand()%28];
         rm->hero.hp= user->chp * 2;
         rm->hero.damage=(rand()%201)+100;
         break;
