@@ -13,22 +13,99 @@ enum monters {empty,nomal,students,baphomet,lee,ryu};
 enum inpc {npcempty,pandora,prist,dwarf};
 enum wepon {basicsword,longsword,japensword,nigthsword_saj};
 enum dep {armor,boots,cape,gloves,mask};
+User* UserPointInitialization(User* user);
 
+User* UserMovement(User* user,maps* monmap,Monster* rm,Boki* boki);
+
+User* ShowMap(User* user, maps* monmap, Boki* boki,Monster* rm);
+
+Monster* MonsterInitialization(Monster* imonster);
+
+Monster* MonterRegenerative(Monster* rm, Boki* boki, User* user);
+
+Monster* MonsterInitialization(Monster* imonster);
+
+//강화 함수들 엘릭서 사용시 엘리서부분을 1로 설정할것
+void WReinForcement(Boki* boki, int count, int armed,int elixir);
+
+void FDepReinForce(Boki* boki, int count, int armed,int elixir);
+
+void SDepReinForce(Boki* boki, int count, int armed,int elixir);
+
+void TDepReinForce(Boki* boki, int count, int armed,int elixir);
+
+void FoDepReinForce(Boki* boki, int count, int armed,int elixir);
+
+void itemInitialization(Boki* boki);
+
+void TownBack(Boki* boki, User* user);
+
+int gold_drop(Boki* boki, int floor);
+
+int gold_drop_boss(Boki* boki, int boss);
+
+int drop_2teer20(Boki* boki);
+
+int drop_3teer20(Boki* boki);
+
+int drop_3teer30(Boki* boki);
+
+int drop_4teer5(Boki* boki);
+
+int drop_4teer10(Boki* boki);
+
+int drop_4teer20(Boki* boki);
+
+int elixir_drop(Boki* boki,Monster* monster,int a);
+
+//소비창 사용
+void consume_window(Boki* boki,User* user);
+
+//텔포위치저장
+void TpsSave(User* user,Boki* boki);
+
+//텔포사용
+void TpsUseMove(User* user,Boki* boki);
+
+void Pandora(Boki* boki);
+
+void Prist(Boki* boki);
+
+
+void Dwarf(Boki* boki);
 //전투함수,층마다 일반몬스터만 상대
-int battle(int floor,int monstercode)
-{
-
-}
-
+int battle(Monster *monster, Boki *boki, int floor, int monstername);
 //보스전투 5층에서만 나오는 보스와 싸움
-int battel_boss(int bossname)
-{}
+int battle_boss(Monster *monster, Boki *boki,int monstername);
+
+void battle_boss_attack(Monster *monster, Boki *boki, int monstername);
+
+void battle_attack(Monster *monster, Boki *boki, int floor, int monstername);
+
+int equip_sword(  Boki* boki);
+
+int equip_mask( Boki* boki);
+
+int equip_armor(  Boki* boki);
+
+int equip_cape(  Boki* boki);
+
+int equip_gloves(  Boki* boki);
+
+int equip_boots(  Boki* boki);
+
+int equip(Boki* boki);
+
+void reinforce(Boki* boki);
+
+void Ereinforce(Boki* boki);
 //기본 터미널 모드 저장
 void save_input_mode(void)
 {
 		tcgetattr(STDIN_FILENO, &org_term); // STDIN으로부터 터미널 속성을 받아온다
 }
 //터미널 enter없이 사용
+
 void set_input_mode(void)
 {
 		tcgetattr(STDIN_FILENO, &new_term); // STDIN으로부터 터미널 속성을 받아온다
@@ -37,22 +114,24 @@ void set_input_mode(void)
 		new_term.c_cc[VTIME] = 0;              // 시간은 설정하지 않음
 		tcsetattr(STDIN_FILENO, TCSANOW, &new_term); // 변경된 속성의 터미널을 STDIN에 바로 적용
 }
-//원래 enter로 바꾸기
+
 void reset_input_mode(void)
 {
 		tcsetattr(STDIN_FILENO, TCSANOW, &org_term);  // STDIN에 기존의 터미널 속성을 바로 적용
 }
+
 //세팅하는거 대충
 int movement(void)
 {
     save_input_mode();
     set_input_mode();
-    char ch=getchar();
+    char ch;
+    if ((ch = getchar()) == 101 ||ch == 108||ch==116||ch==105)
+        return ch;
     ch=getchar();
     ch=getchar();
   return ch;  
 }
-
 
 int gold_drop(Boki* boki,int floor)/*골드 드랍 함수*/
 {
@@ -682,7 +761,6 @@ int drop_4teer10(Boki* boki) /*4티어 10프로 드랍 함수*/
     return ten;
 }
 
-
 //사용자 위치를 초기화 하는 함수(동적할당함)
 User* UserPointInitialization(User* user)
 {
@@ -696,71 +774,89 @@ User* UserPointInitialization(User* user)
 }
 
 //방향키로 사용자가 움직이는것을 해주는 함수
-User* UserMovement(User* user,maps* monmap)
+User* UserMovement(User* user,maps* monmap,Monster* rm,Boki* boki)
 {
 //위 65 아레 66 왼쪽 68 오른족 67
-int mov=movement();
+    rm = MonterRegenerative(rm, boki, user);
+    int mov=movement();
 user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]]=' ';
-int a[2];
-memcpy(a,user->userPoint,sizeof(int)*2);
 switch (mov)
 {
 //위
 case 65:
-    a[0]-=1;
-    if(a[0]<0){
+    user->userPoint[0]-=1;
+    if(user->userPoint[0]<0){
         printf("맵위 쪽 끝입니다.\n");
-        a[0]=0;
+        user->userPoint[0]=0;
         break;
     }
    else      
         break;
 //아레
 case 66:
-    a[0]+=1;
-    if(a[0]>49)
+    user->userPoint[0]+=1;
+    if(user->userPoint[0]>49)
      {
         printf("맵 아레 쪽 끝입니다.\n");
-        a[0]=49;
+        user->userPoint[0]=49;
         break;
     }   
     else
         break;
 //왼쪽
 case 68:
-     a[1]-=1;
+     user->userPoint[1]-=1;
     if(user->userPoint[1]<0)
     {
         printf("맵 왼쪽 끝입니다.\n");
-        a[1]=0;
+        user->userPoint[1]=0;
         break;
     }
 else 
     break;
 //오른쪽
 case 67:
-    a[1]+=1;
+    user->userPoint[1]+=1;
     if(user->userPoint[1]>49)
     {
         printf("맵 오른쪽 끝입니다.\n");
-        a[1]=49;
+        user->userPoint[1]=49;
         break;
     }
    else     
         break;
+//알파벳 e
+case 101:
+    //장비창 불러오는 함수
+    equip(boki);
+    sleep(1);
+    break;
+//알파벳 i
+case 105:
+    //소비창 불러오는 함수
+    consume_window(boki,user);
+    sleep(1);
+    break;
+//알파벳 t
+case 116:
+    //텔포위치 저장
+    TpsSave(user,boki);
+    sleep(1);
+break;
+
 default:
     break;
 }
 system("clear");
 
-memcpy(user->userPoint,a,sizeof(int)*2);
 
 return user;
 }
 
 //맵을 보여주고 사용자가 몬스터를 만났을때 상호 작용을 하는 함수
-User* ShowMap(User* user,maps* monmap,Boki* boki)
+User* ShowMap(User* user,maps* monmap,Boki* boki,Monster* rm)
 {
+    int battle1=1;
     if(user->floorcount[0]!=5&&user->userPoint[0]==49&&user->userPoint[1]==49){
     printf("다음층으로 이동하시겠습니까?y or n\n");
     char ch=getchar();
@@ -803,7 +899,17 @@ if(user->floorcount[0]!=0&&user->userPoint[0]==1&&user->userPoint[1]==1){
     ch=getchar();
 }
 }
+if(user->floorcount[0]==0)
+{
+user->userInterFaceMap[5][5]='#';
+user->userInterFaceMap[7][7]='@';
+user->userInterFaceMap[10][10]='^';    
+}
+
 user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]]='$';
+if(user->floorcount[0] != 0){
+    user->userInterFaceMap[1][1]='0'; 
+}
 
 for (int i = 0; i < 50; i++)
     {
@@ -815,33 +921,34 @@ for (int i = 0; i < 50; i++)
     }
 switch (user->floorcount[0])
 {
-// case 0:
-//     //몬스터 또는 npc 조우상황을 스위치로 작성하려고함
-//     switch (monmap->town.townmaps[user->userPoint[0]][user->userPoint[1]])
-//     {
-//     case pandora:
-//         //판도라 전용 함수
-//         system("clear");
-//         printf("판도라 상점\n");
-//         getchar();
-//         break;
-//     case prist:
-//         //프리스트 전용함수
-//         break;
-//     case dwarf:
-//         //드워프 전용함수
-//         break;
-//     default:
-//         break;
-//     }
-//     break;
+case 0:
+    //몬스터 또는 npc 조우상황을 스위치로 작성하려고함
+    switch (monmap->town.townmaps[user->userPoint[0]][user->userPoint[1]])
+    {
+    case pandora:
+        //판도라 전용 함수
+        Pandora(boki);
+        break;
+    case prist:
+        //프리스트 전용함수
+        Prist(boki);
+        break;
+    case dwarf:
+        //드워프 전용함수
+        Dwarf(boki);
+        break;
+    default:
+        break;
+    }
+    break;
 
 case 1:
     switch (monmap->firstfloor.monstermaps[user->userPoint[0]][user->userPoint[1]])
     {
     case nomal:
         //1층일반 몬스터와 전투
-        if(battle(user->floorcount[0],nomal)== 1)
+        system("clear");
+       if(battle1=battle(rm,boki,user->floorcount[0],nomal)== 1)
         {
             gold_drop(boki,user->floorcount[0]);
             town_movement(boki);
@@ -850,7 +957,8 @@ case 1:
             user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';      
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -858,9 +966,12 @@ case 1:
             user->fcinterrupt[0]=-1;      
             break;
         }
+        else
+            break;
     case students:
         //학생용사들과 전투
-        if(battle(user->floorcount[0],students)== 1)
+        system("clear");
+        if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
         {
             gold_drop_boss(boki,students-1);
             town_movement(boki);
@@ -871,7 +982,8 @@ case 1:
             user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';      
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -888,7 +1000,8 @@ case 2:
     {
     case nomal:
         //2층 일반 몬스터와 전투
-         if(battle(user->floorcount[0],nomal)== 1)
+         system("clear");
+         if(battle1=battle(rm,boki,user->floorcount[0],nomal)== 1)
         {
             gold_drop(boki,user->floorcount[0]);
             town_movement(boki);
@@ -897,7 +1010,8 @@ case 2:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -905,11 +1019,12 @@ case 2:
             user->fcinterrupt[0]=-1;      
               break;
         }
-       
-        break;
+       else
+            break;
     case students:
         //학생용사들과 전투
-         if(battle(user->floorcount[0],students)== 1)
+         system("clear");
+         if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
         {
             gold_drop_boss(boki,students-1);
             town_movement(boki);
@@ -920,7 +1035,8 @@ case 2:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -928,6 +1044,8 @@ case 2:
             user->fcinterrupt[0]=-1;      
             break;
         }
+        else
+            break;
     }
     break;
 case 3:
@@ -935,7 +1053,8 @@ case 3:
     {
     case nomal:
         //3층 일반 몬스터와 전투
-       if(battle(user->floorcount[0],nomal)== 1)
+       system("clear");
+       if(battle1=battle(rm,boki,user->floorcount[0],nomal)== 1)
         {
             gold_drop(boki,user->floorcount[0]);
             town_movement(boki);
@@ -944,7 +1063,8 @@ case 3:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -952,10 +1072,12 @@ case 3:
             user->fcinterrupt[0]=-1;      
               break;
         }
+    else    
         break;
     case students:
         //학생용사들과 전투
-         if(battle(user->floorcount[0],students)== 1)
+         system("clear");
+        if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
         {
             gold_drop_boss(boki,students-1);
             town_movement(boki);
@@ -966,7 +1088,8 @@ case 3:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -974,6 +1097,8 @@ case 3:
             user->fcinterrupt[0]=-1;      
             break;
         }
+    else
+        break;
     }
     
     break;
@@ -982,7 +1107,8 @@ case 4:
     {
     case nomal:
         //4층 일반 몬스터와 전투
-        if(battle(user->floorcount[0],nomal)== 1)
+        system("clear");
+        if(battle1=battle(rm,boki,user->floorcount[0],nomal)== 1)
         {
             gold_drop(boki,user->floorcount[0]);
             town_movement(boki);
@@ -992,7 +1118,8 @@ case 4:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -1000,10 +1127,12 @@ case 4:
             user->fcinterrupt[0]=-1;      
               break;
         }
+    else   
         break;
     case students:
         //학생용사들과 전투
-        if(battle(user->floorcount[0],students)== 1)
+        system("clear");
+        if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
         {
             gold_drop_boss(boki,students-1);
             town_movement(boki);
@@ -1014,7 +1143,8 @@ case 4:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -1022,8 +1152,8 @@ case 4:
             user->fcinterrupt[0]=-1;      
             break;
         }
-        
-        
+    else  
+        break;
     } 
 break;
 case 5:
@@ -1031,7 +1161,8 @@ case 5:
     {
     case nomal:
         //5층 일반 몬스터와 전투
-        if(battle(user->floorcount[0],nomal)== 1)
+        system("clear");
+        if(battle1=battle(rm,boki,user->floorcount[0],nomal)== 1)
         {
             gold_drop(boki,user->floorcount[0]);
             town_movement(boki);
@@ -1041,7 +1172,8 @@ case 5:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -1049,9 +1181,12 @@ case 5:
             user->fcinterrupt[0]=-1;      
               break;
         }
+     else   
+        break;
     case students:
         //학생용사들과 전투
-        if(battle(user->floorcount[0],students)== 1)
+        system("clear");
+        if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
         {
             gold_drop_boss(boki,students-1);
             town_movement(boki);
@@ -1062,7 +1197,8 @@ case 5:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -1070,9 +1206,12 @@ case 5:
             user->fcinterrupt[0]=-1;      
             break;
         }
+    else    
+        break;
     case baphomet:
         //바포메트와 전투
-        if(battel_boss(baphomet)== 1)
+        system("clear");
+        if(battle1=battle_boss(rm,boki,baphomet)== 1)
         {
             gold_drop_boss(boki,baphomet-1);
             drop_3teer20(boki);
@@ -1083,7 +1222,8 @@ case 5:
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -1093,17 +1233,20 @@ case 5:
         }
     case lee:
         //리얼보스와 전투
-        if(battel_boss(lee)== 1)
+        system("clear");
+        if(battle1=battle_boss(rm,boki,lee)== 1)
         {
             gold_drop_boss(boki,lee-1);
             drop_3teer20(boki);
             drop_4teer10(boki);
+            elixir_drop(boki,rm,lee);
         boki->fhp*=1.60;
         monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -1111,19 +1254,24 @@ case 5:
             user->fcinterrupt[0]=-1;      
               break;
         }
+    else    
+        break;
     case ryu:
         //찐막보스와 전투
-        if(battel_boss(ryu)== 1)
+        system("clear");
+        if(battle1=battle_boss(rm,boki,ryu)== 1)
         {
             gold_drop_boss(boki,ryu-1);
             drop_3teer30(boki);
             drop_4teer20(boki);
+            elixir_drop(boki,rm,ryu);
         boki->fhp*=2.00;
         monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
         break;
         }
-        else{
+        else if(battle1 ==0)
+        {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
@@ -1131,6 +1279,8 @@ case 5:
             user->fcinterrupt[0]=-1;      
               break;
         }
+        else
+            break;
     }
     break;
 default:
@@ -1203,14 +1353,17 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
                     copymap[i][j]=empty;
             }
         }
+        copymap[1][1]=empty;
         memcpy(monmap->firstfloor.monstermaps,copymap,sizeof(int)*2500);
         for (int k = 0; k < 50; k++){
             for (int z = 0; z < 50; z++)
             {
                 if(monmap->firstfloor.monstermaps[k][z]==empty)
                     user->userInterFaceMap[k][z]=' ';
-                else
+                else if((monmap->firstfloor.monstermaps[k][z]==nomal))
                     user->userInterFaceMap[k][z]='?'; 
+                else if((monmap->firstfloor.monstermaps[k][z]==students))
+                    user->userInterFaceMap[k][z]='!';
             }
         }
         user->userInterFaceMap[49][49]='0';
@@ -1232,6 +1385,7 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
             
             
         }
+        copymap[1][1]=empty;
         memcpy(monmap->secondfloor.monstermaps,copymap,sizeof(int)*2500);
         for (int k = 0; k < 50; k++){
             for (int z = 0; z < 50; z++)
@@ -1260,6 +1414,7 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
                     copymap[i][j]=empty;
             }
         }
+        copymap[1][1]=empty;
         memcpy(monmap->thirdfloor.monstermaps,copymap,sizeof(int)*2500);
         for (int k = 0; k < 50; k++){
             for (int z = 0; z < 50; z++)
@@ -1288,6 +1443,7 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
                     copymap[i][j]=empty;
             }
         }
+        copymap[1][1]=empty;
         memcpy(monmap->fourthfloor.monstermaps,copymap,sizeof(int)*2500);
         for (int k = 0; k < 50; k++){
             for (int z = 0; z < 50; z++)
@@ -1322,6 +1478,7 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
                     copymap[i][j]=empty;
             }
         }
+    copymap[1][1]=empty;
     memcpy(monmap->fifthfloor.monstermaps,copymap,sizeof(int)*2500);
     for (int k = 0; k < 50; k++)
     {
@@ -1424,11 +1581,12 @@ Monster* MonterRegenerative(Monster* rm,Boki* boki,User* user)
 }
 
 //무기 강화함수
-void WReinForcement(Boki* boki,int count,int armed)
+void WReinForcement(Boki* boki,int count,int armed,int elixir)
 {
     srand(time(NULL));
     int aaaa=rand()%10;
-    printf("aaaa:%d\n",aaaa);
+    if(elixir == 1)
+        aaaa=9;
     if(aaaa>=8){
         switch (armed)
         {
@@ -1488,10 +1646,12 @@ void WReinForcement(Boki* boki,int count,int armed)
 }
 
 //1티어 방어구 강화 함수
-void FDepReinForce(Boki* boki,int count,int armed)
+void FDepReinForce(Boki* boki,int count,int armed,int elixir)
 {
     srand(time(NULL));
     int aaaa=rand()%10;
+    if(elixir == 1)
+        aaaa=9;
     if(aaaa>=8){
         switch (armed)
         {
@@ -1561,10 +1721,12 @@ void FDepReinForce(Boki* boki,int count,int armed)
 }
 
 //2티어 방어구 강화 함수
-void SDepReinForce(Boki* boki,int count,int armed)
+void SDepReinForce(Boki* boki,int count,int armed,int elixir)
 {
     srand(time(NULL));
     int aaaa=rand()%10;
+    if(elixir == 1)
+        aaaa=9;
     if(aaaa>=8){
         switch (armed)
         {
@@ -1634,10 +1796,12 @@ void SDepReinForce(Boki* boki,int count,int armed)
 }
 
 //3티어 방어구 강화 함수
-void TDepReinForce(Boki* boki,int count,int armed)
+void TDepReinForce(Boki* boki,int count,int armed,int elixir)
 {
     srand(time(NULL));
     int aaaa=rand()%10;
+    if(elixir == 1)
+        aaaa=9;
     if(aaaa>=8){
         switch (armed)
         {
@@ -1707,10 +1871,12 @@ void TDepReinForce(Boki* boki,int count,int armed)
 }
 
 //4티어 방어구 강화 함수
-void FoDepReinForce(Boki* boki,int count,int armed)
+void FoDepReinForce(Boki* boki,int count,int armed,int elixir)
 {
     srand(time(NULL));
     int aaaa=rand()%10;
+    if(elixir == 1)
+        aaaa=9;
     if(aaaa>=8){
         switch (armed)
         {
@@ -1779,6 +1945,7 @@ void FoDepReinForce(Boki* boki,int count,int armed)
     }
 }
 
+//공격력 방어력 초기화
 void itemInitialization(Boki* boki)/*아이템 공격력, 방어구 초기화*/
 {
     for (int i = 0; i < 5; i++)
@@ -1810,12 +1977,4251 @@ void itemInitialization(Boki* boki)/*아이템 공격력, 방어구 초기화*/
     }
 }
 
+void TownBack(Boki* boki, User* user)
+{
+    user->floorcount[0] = 0;
+    user->fcinterrupt[0] = -1;
+    user->userPoint[0] = 0;
+    user->userPoint[1] = 0;
+}
+
+Boki* BokiInitialization(Boki* boki)
+{
+    
+    boki=(Boki*)malloc(sizeof(Boki));
+    memset(boki,0,sizeof(Boki));
+    
+    boki->fhp=300;
+    boki->chp=boki->fhp;
+    boki->damage=0;
+    boki->def=0;
+    boki->gold=300;
+    boki->bokiEquipment.weapon.basicsword[0][0]=1;
+    boki->bokiEquipment.nomal.basicarmor[0][0]=1;
+    boki->bokiEquipment.nomal.basicboots[0][0]=1;
+    boki->bokiEquipment.nomal.basiccape[0][0]=1;
+    boki->bokiEquipment.nomal.basicgloves[0][0]=1;
+    boki->bokiEquipment.nomal.basicmask[0][0]=1;
+    itemInitialization(boki);
+    memset(boki->tpCoordinate,-1,sizeof(coordinate)*7);
+return boki;
+}
+
+void consume_window(Boki* boki,User* user)
+{
+    system("clear");
+    printf("아이템을 사용\n");
+    printf("1)빨간물약\t\t2)주황물약\n3)맑은물약\t\t4)고농도물약\n5)마을이동주문서\t\t6)장비강화주문서\n"
+            "7)순간이동주문서\t\t8)엘릭서\n");
+    
+    char a;
+    int item_choice;
+    printf("선택:");
+    a=getchar();
+    item_choice=atoi(&a);
+    switch (item_choice)
+    {
+    case 1:
+    if(boki->consume.potion.redpotion>0)
+    {
+        printf("빨간물약을 사용합니다.");
+        boki->consume.potion.redpotion--;
+        boki->chp+=30;
+        if(boki->chp>=boki->fhp)
+        {
+            boki->chp=boki->fhp;
+        }
+        printf("남은 빨간물약 %d개\n",boki->consume.potion.redpotion);
+        printf("사용후체력%d\n",boki->chp);
+        
+    }
+    break;
+    case 2:
+    if(boki->consume.potion.orangepotion>0)
+    {
+        printf("주황물약을 사용합니다.\n");
+        boki->consume.potion.orangepotion--;
+        boki->chp+=50;
+        if(boki->chp>=boki->fhp)
+        {
+            boki->chp=boki->fhp;
+        }
+        printf("남은 주황물약 %d개\n",boki->consume.potion.orangepotion);
+        printf("사용후체력%d\n",boki->chp);
+        
+    }
+    break;
+    case 3:
+    if(boki->consume.potion.purepotion>0)
+    {
+        printf("맑은물약을 사용합니다.\n");
+        boki->consume.potion.purepotion--;
+        boki->chp+=70;
+        if(boki->chp>=boki->fhp)
+        {
+            boki->chp=boki->fhp;
+        }
+        printf("남은 맑은물약 %d개\n",boki->consume.potion.purepotion);
+        printf("사용후체력%d\n",boki->chp);
+    }
+    break;
+    case 4:
+    if(boki->consume.potion.highpotion>0)
+    {
+        printf("고농도물약을 사용합니다.\n");
+        boki->consume.potion.highpotion--;
+        boki->chp+=150;
+        if(boki->chp>=boki->fhp)
+        {
+            boki->chp=boki->fhp;
+        }
+        printf("남은 고농도물약 %d개\n",boki->consume.potion.highpotion);
+        printf("사용후체력%d\n",boki->chp);
+    }
+    break;
+    case 5:
+    if(boki->consume.scroll.tmscrollpaper>0)
+    {
+        printf("마을이동주문서를 사용합니다.\n");
+        boki->consume.scroll.tmscrollpaper--;
+        TownBack(boki,user);
+        printf("남은 마을 이동주문서 %d개\n",boki->consume.scroll.tmscrollpaper);
+    }
+    break;
+    case 6:
+    if(boki->consume.scroll.ermagicscroll>0)
+    {
+        printf("장비강화주문서를 사용합니다.\n");
+        boki->consume.scroll.ermagicscroll--;
+        reinforce(boki);
+        printf("남은 장비강화주문서 %d개\n",boki->consume.scroll.ermagicscroll);
+    }
+    break;
+    case 7:
+        if(boki->consume.scroll.teleportscroll>0)
+    {
+        printf("순간이동주문서를 사용합니다.\n");
+        boki->consume.scroll.teleportscroll--;
+        TpsUseMove(user,boki);
+        printf("남은 순간이동주문서 %d개\n",boki->consume.scroll.teleportscroll);
+    }
+    break;
+    case 8:
+        if(boki->consume.elixir>0)
+    {
+        printf("엘릭서를 사용합니다.\n");
+        boki->consume.elixir--;
+        Ereinforce(boki);
+        printf("남은 엘릭서 %d개\n",boki->consume.elixir);
+    }
+    break;
+    default:
+        break;
+    }
+
+}
+
+
+void TpsSave(User* user,Boki* boki)
+{
+    for (int i = 0; i < 7; i++)
+    {
+       if(boki->tpCoordinate[i].floorInfo ==-1){
+        boki->tpCoordinate[i].floorInfo=user->floorcount[0];
+        boki->tpCoordinate[i].userTpInfo[0]=user->userPoint[0];
+        boki->tpCoordinate[i].userTpInfo[1]=user->userPoint[1];
+        printf("해당좌표를 %d번째에 저장했습니다.\n",i);        
+        break;
+       }
+    else
+        {
+            printf("모든 순간이동 좌표가 가득찼습니다.\n");
+        }
+    }       
+}
+
+void TpsUseMove(User* user,Boki* boki)
+{
+    char b;
+    printf("어떤 좌표로 이동하시겠습니까?\n");
+    sleep(1);
+    for (int i = 0; i < 7; i++)
+    {
+       if(boki->tpCoordinate[i].floorInfo !=-1)
+       {
+        printf("%d번째좌표 %d층 %d , %d 좌표로 이동하라면 %d를 눌러주세요\n",i,boki->tpCoordinate[i].floorInfo,
+        boki->tpCoordinate[i].userTpInfo[0],boki->tpCoordinate[i].userTpInfo[1],i);
+       }      
+    }
+    b = getchar();
+    int a = atoi(&b);
+    if(boki->tpCoordinate[a].floorInfo !=-1)
+    {
+        printf("%d번\n",a);
+        user->floorcount[0]=boki->tpCoordinate[a].floorInfo;
+        user->fcinterrupt[0]=-1;
+        user->userPoint[0]=boki->tpCoordinate[a].userTpInfo[0];
+        user->userPoint[1]=boki->tpCoordinate[a].userTpInfo[1];
+        printf("이동완료!\n");
+    }
+
+    else
+    {
+        printf("잘못된 좌표를 입력하셨습니다.\n");
+    }
+}
+
+int elixir_drop(Boki* boki,Monster* monster,int a)
+{
+    // boki->consume.elixir;
+    srand(time(NULL));
+    int get_elixir;
+    int chance_elixir;
+    chance_elixir=rand()%101;
+    switch (a)
+    {
+    case 4:
+    if (chance_elixir<=10)
+    {
+        get_elixir=rand()%3+1;
+        boki->consume.elixir+=get_elixir;
+        printf("엘릭서 %d개 획득\n",get_elixir);
+        break;
+    }
+    else
+        printf("X");
+    break;
+
+    case 5:
+    if (chance_elixir<=20)
+    {
+        get_elixir=rand()%3+1;
+        boki->consume.elixir+=get_elixir;
+        printf("엘릭서 %d개 획득\n",get_elixir);
+    }
+        break;
+
+    default:
+        get_elixir=0;
+        printf("엘릭서를 획득하지 못했습니다.\n");
+
+        break;
+    }
+
+    return get_elixir;
+}
+
+void Pandora(Boki* boki)
+{
+    char a;
+    int b;
+    system("clear");
+    printf("무엇을 구매하시겠습니까?\n");
+    printf("1)빨간물약: 30골드\t 2)주황물약: 50골드\t 3)맑은물약: 100골드\t 4)고농도 물약:200골드\t \
+    5)마을 이동 주문서: 100골드\t");
+    a=getchar();
+    
+    b=atoi(&a);
+
+    switch (b)
+    {
+    case 1:
+    if(boki->gold>=30){
+        printf("빨간물약 구매 완료!");
+        boki->gold-=30;
+        boki->consume.potion.redpotion +=1;
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }    
+        break;
+    case 2:
+    if(boki->gold>=50){
+        printf("주황 물약 구매 완료!");
+        boki->gold-=50;
+        boki->consume.potion.orangepotion +=1;
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }        break;
+    case 3:
+    if(boki->gold>=100){
+        printf("맑은 물약 구매 완료!");
+        boki->gold-=100;
+        boki->consume.potion.purepotion +=1;
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }
+    break;
+
+    case 4:
+    if(boki->gold>=200){
+        printf("고농축 물약 구매 완료!");
+        boki->gold-=200;
+        boki->consume.potion.highpotion +=1;
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }
+        break;
+    case 5:
+    if(boki->gold>=100){
+        printf("마을이동 주문서 구매 완료!");
+        boki->gold-=100;
+        boki->consume.scroll.tmscrollpaper +=1;
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }
+        break;
+    default:
+        printf("다른건 안팝니다.\n");
+        break;
+    }
+sleep(1);
+}
+
+void Prist(Boki* boki)
+{
+    char a;
+    int b;
+    system("clear");
+    printf("성소입니다. 피 채울까요? y or n\n");
+    a=getchar();
+    switch (a)
+    {
+    case 121:
+        printf("다 채움\n");
+        boki->chp=boki->fhp;
+        printf("보키 현재 체력: %d ",boki->chp);    
+        break;
+    
+    case 110:
+        printf("안 채움\n");
+        break;
+    
+    default:
+        break;
+    }
+    sleep(1);
+}
+
+void Dwarf(Boki* boki)
+{
+    char a;
+    int b;
+    system("clear");
+    printf("무엇을 구매하시겠습니까?\n");
+    printf("1)장비 강화 주문서 \t");
+    a=getchar();
+    b=atoi(&a);
+    switch (b)
+    {
+    case 1:
+    if(boki->gold>=300){
+        printf("장비 강화 주문서 구매 완료!");
+        boki->gold-=300;
+        boki->consume.scroll.ermagicscroll +=1;
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }    
+        break;
+    default:
+        printf("다른건 안팝니다.\n");
+        break;
+    }
+sleep(1);
+}
 
 
 
+int battle(Monster *monster, Boki *boki, int floor, int monstername) // 스위치 사용해서 몬스터네임이 1로 들어오면 1층애들만난다.  학생용사가 2, int battleboss
+{ 
+    while (1)
+    {   
+        boki->chp;
+        printf("1.전투\n2.물약사용\n3.도망 \n");
+        int choice;
+        char aaaa;
+        int item_choice;
+        while (1)
+        {
+        aaaa=getchar();
+        choice=atoi(&aaaa);    
+        if(choice==1||choice==2||choice==3)
+        {
+            break;
+        }
+        }
+        
+        if(choice==1)
+        {
+            switch (floor)
+            {
+            case 1://오크전사
+                    monster->oaks_warrior.hp -= boki->damage; // 유저의 공격
+                    printf("오크전사 남은 hp %d\n", monster->oaks_warrior.hp);
+                    printf("boki %d체력\n", boki->chp);
+                    boki->chp -= monster->oaks_warrior.damage; //몬스터의 공격
+                    printf("boki 남은 hp %d\n", boki->chp);
+                        if (monster->oaks_warrior.hp <= 0) //몬스터가 죽었을 때
+                            {
+                                printf("승리했습니다.\n"); // 승리 메세지 출력
+                                return 1;
+                            }
+                        else if (boki->chp <= 0)
+                            {
+                                printf("패배했습니다.\n"); //패배 메세지 출력
+                                return 0;
+                            }
+                    else if (monster->oaks_warrior.hp > 0) //몬스터가 살아 있으면 콘티뉴
+                        break;
+            case 2://좀비
+                    monster->zombie.hp -= boki->damage;
+                    printf("좀비 남은 hp %d\n", monster->zombie.hp);
+                    printf("boki %d체력\n", boki->chp);
+                    boki->chp -= monster->zombie.damage;
+                    printf("boki 남은 hp %d\n", boki->chp);
+                    if (monster->zombie.hp <= 0)
+                        {
+                            printf("승리했습니다.\n");
+                            return 1;
+                        }
+                    else if (boki->chp <= 0)
+                        {
+                            printf("패배했습니다.\n");
+                            return 0;
+                        }
+                    else if (monster->zombie.hp > 0)
+                        break;
+            case 3: // 구울 전투
+                    monster->skeleton.hp -= boki->damage;
+                    printf("구울 남은 hp %d\n", monster->ghoul.hp);
+                    printf("boki %d체력\n", boki->chp);
+                    boki->chp -= monster->ghoul.damage;
+                    printf("boki 남은 hp %d\n", boki->chp);
+                    if (monster->ghoul.hp <= 0)
+                        {
+                            printf("승리했습니다.\n");
+                            return 1;
+                        }
+                    else if (boki->chp <= 0)
+                        {
+                            printf("패배했습니다.\n");
+                            return 0;
+                        }
+                    else if (monster->ghoul.hp > 0)
+                        break;
+            case 4:// 스켈레톤 전투
+                    monster->skeleton.hp -= boki->damage;
+                    printf("스켈레톤 남은 hp %d\n", monster->skeleton.hp);
+                    printf("boki %d체력\n", boki->chp);
+                    boki->chp -= monster->skeleton.damage;
+                    printf("boki 남은 hp %d\n", boki->chp);
+                    if (monster->skeleton.hp <= 0)
+                        {
+                            printf("승리했습니다.\n");
+                            return 1;
+                        }
+                    else if (boki->chp <= 0)
+                        {
+                            printf("패배했습니다.\n");
+                            return 0;
+                        }
+                    else if (monster->skeleton.hp > 0)
+                        break;
+            case 5://스파토이
+                monster->spartoi.hp -= boki->damage;
+                    printf("스파토이 남은 hp %d\n", monster->spartoi.hp);
+                    printf("boki %d체력\n", boki->chp);
+                    boki->chp -= monster->spartoi.damage;
+                    printf("boki 남은 hp %d\n", boki->chp);
+                    if (monster->spartoi.hp <= 0)
+                        {
+                            printf("승리했습니다.\n");
+                            return 1;
+                        }
+                    else if (boki->chp <= 0)
+                        {
+                            printf("패배했습니다.\n");
+                            return 0;
+                        }
+                    else if (monster->spartoi.hp > 0)
+                        break;
+            default:
+                break;
+
+            }
+        }
+        else if(choice==2)//물약 사용
+        {
+            char lk;
+            int item_choice;
+            printf("\n아이템을 선택해주세요\n 1.빨간물약 2.주황물약 3.맑은물약 4.고농도물약\n ");
+            lk=getchar();
+            item_choice=atoi(&lk);
+            switch(item_choice)
+            {
+                case 1: //빨간물약
+                {
+                    if (boki->consume.potion.redpotion>0)
+                    {
+                        boki->consume.potion.redpotion -= 1;
+                        printf("빨간물약을 사용합니다. 남은 빨간물약개수:%d\n", boki->consume.potion.redpotion);
+                        boki->chp +=30;
+
+                        if(boki->chp > boki->fhp)
+                        {
+                            boki->chp = boki->fhp;
+                        }
+                        printf("현재HP:%d\n", boki->chp);
+                        battle_attack(monster, boki, floor,monstername);
+                        choice=0;    
+                    }
+                    break;
+                }
+                case 2: //주황포션
+                {
+                    if (boki->consume.potion.orangepotion>1)
+                    {
+                        boki->consume.potion.orangepotion -= 1;
+                        printf("주황물약을 사용합니다. 남은 주황물약개수:%d\n", boki->consume.potion.orangepotion);
+                        boki->chp = boki->chp+50;
+                        if(boki->chp > boki->fhp)
+                        {
+                            boki->chp = boki->fhp;
+                        }
+                        printf("현재HP:%d\n", boki->chp);
+                        battle_attack(monster, boki, floor,monstername);
+                        choice=0;
+                    }
+                    break;
+                }                    
+                case 3: //맑은물약
+                {
+                    if (boki->consume.potion.purepotion>1)
+                    {
+                        boki->consume.potion.purepotion -= 1;
+                        printf("맑은물약을 사용합니다. 남은 맑은물약개수:%d\n", boki->consume.potion.purepotion);
+                        boki->chp = boki->chp+70;
+                        if(boki->chp > boki->fhp)
+                        {
+                            boki->chp = boki->fhp;
+                        }
+                        printf("현재HP:%d\n", boki->chp);
+                        battle_attack(monster, boki, floor,monstername);
+                        choice=0;
+                    }
+                    break;
+                }                    
+                case 4: //고농도물약
+                {
+                    if (boki->consume.potion.redpotion>1)
+                    {
+                        boki->consume.potion.redpotion -= 1;
+                        printf("고농도물약을 사용합니다. 남은 고농도물약개수:%d\n", boki->consume.potion.highpotion);
+                        boki->chp = boki->chp+150;
+                        if(boki->chp > boki->fhp)
+                        {
+                            boki->chp = boki->fhp;
+                        }
+                        printf("현재HP:%d\n", boki->chp);
+                        battle_attack(monster, boki, floor,monstername);
+                        choice=0;
+                    }
+                break; 
+                }
+                
+                default:
+                    break;
+                    
+            }
+        }
+        else if(choice == 3) //도망가기
+        {
+            srand(time(NULL));
+            int random = rand()%100+1; //1부터 100까지 출력
+            if (random <= 30) //1부터 30까지 랜덤수
+                {
+                    printf("%d, 도망성공\n", random);
+                    return 3;
+                }
+            else
+            {
+                printf("%d 도망실패\n", random);
+            }
+            break;
+        }
+    }
+}    
+int battle_boss(Monster *monster, Boki *boki,int monstername)
+{
+    while (1)
+
+    {
+        boki->chp;
+        printf("1.전투\n2.물약 사용\n3.도망 \n");
+        char aaaa;
+        int choice;
+        int item_choice;
+         while (1)
+        {
+        aaaa=getchar();
+        choice=atoi(&aaaa);    
+        if(choice==1||choice==2||choice==3)
+        {
+            break;
+        }
+        }
+        if(choice==1)
+        switch (monstername)
+        {
+            case 2: 
+                monster->hero.hp-= boki->damage;
+                printf("몬스터 남은 hp %d\n", monster->hero.hp);
+                printf("boki %d체력\n", boki->chp);
+                boki->chp -= monster->hero.damage;
+                printf("boki 남은 hp %d\n", boki->chp);
+                if (monster->hero.hp <= 0)
+                {
+                    printf("승리했습니다.\n");
+                    return 1;
+                }
+                else if (boki->chp <= 0)
+                {
+                    printf("패배했습니다.\n");
+                    return 0;
+                }
+                else if (monster->hero.hp > 0)
+                    break;
+
+            case 3:
+                monster->Baphomet.hp -= boki->damage;
+                printf("몬스터 남은 hp %d\n", monster->Baphomet.hp);
+                printf("boki %d체력\n", boki->chp);
+                boki->chp -= monster->Baphomet.damage;
+                printf("boki 남은 hp %d\n", boki->chp);
+                if (monster->Baphomet.hp <= 0)
+                {
+                    printf("승리했습니다.\n");
+                    return 1;
+                }
+                else if (boki->chp <= 0)
+                {
+                    printf("패배했습니다.\n");
+                    return 0;
+                }
+                else if (monster->Baphomet.hp > 0)
+                    break;
+            case 4:
+                monster->boss.hp-=boki->damage;
+                printf("몬스터 남은 hp %d\n",monster->boss.hp);
+                printf("boki %d체력", boki->chp);
+                boki->chp -= monster->boss.damage;
+                printf("boki 남은 hp %d\n", boki->chp);
+                if (monster->boss.hp <= 0)
+                {
+                    printf("승리했습니다.\n");
+                    return 1;
+                }
+                else if (boki->chp <= 0)
+                {
+                    printf("패배했습니다.\n");
+                    return 0;
+                }
+                else if (monster->boss.hp > 0)
+                    break;
+            case 5:
+                monster->realboss.hp-=boki->damage;
+                printf("몬스터 남은 hp %d\n",monster->realboss.hp);
+                printf("boki %d체력\n", boki->chp);
+                boki->chp -= monster->realboss.damage;
+                printf("boki 남은 hp %d\n", boki->chp);
+                if (monster->realboss.hp <= 0)
+                {
+                    printf("승리했습니다.\n");
+                    return 1;
+                }
+                else if (boki->chp <= 0)
+                {
+                    printf("패배했습니다.\n");
+                    return 0;
+                }
+                else if (monster->realboss.hp > 0)
+                    break;
+            default:
+                break;
+        }
+        else if(choice==2)//물약 사용
+        {
+            int item_choice;
+            printf("\n아이템을 선택해주세요\n 1.빨간물약 2.주황물약 3.맑은물약 4.고농도물약\n ");
+            aaaa =getchar();
+            item_choice=atoi(&aaaa);
+            switch(item_choice)
+            {
+                case 1: //빨간물약
+                {
+                    if (boki->consume.potion.redpotion>0)
+                    {
+                        boki->consume.potion.redpotion -= 1;
+                        printf("빨간물약을 사용합니다. 남은 빨간물약개수:%d\n", boki->consume.potion.redpotion);
+                        boki->chp +=30;
+
+                        if(boki->chp > boki->fhp)
+                        {
+                            boki->chp = boki->fhp;
+                        }
+                        printf("현재HP:%d\n", boki->chp);
+                        battle_boss_attack(monster,boki,monstername);
+                        choice=0;    
+                    }
+                    break;
+                }
+                case 2: //주황포션
+                {
+                    if (boki->consume.potion.orangepotion>1)
+                    {
+                        boki->consume.potion.orangepotion -= 1;
+                        printf("주황물약을 사용합니다. 남은 주황물약개수:%d\n", boki->consume.potion.orangepotion);
+                        boki->chp = boki->chp+50;
+                        if(boki->chp > boki->fhp)
+                        {
+                            boki->chp = boki->fhp;
+                        }
+                        printf("현재HP:%d\n", boki->chp);
+                        battle_boss_attack(monster,boki,monstername);
+                        choice=0;
+                    }
+                    break;
+                }                    
+                case 3: //맑은물약
+                {
+                    if (boki->consume.potion.purepotion>1)
+                    {
+                        boki->consume.potion.purepotion -= 1;
+                        printf("맑은물약을 사용합니다. 남은 맑은물약개수:%d\n", boki->consume.potion.purepotion);
+                        boki->chp = boki->chp+70;
+                        if(boki->chp > boki->fhp)
+                        {
+                            boki->chp = boki->fhp;
+                        }
+                        printf("현재HP:%d\n", boki->chp);
+                        battle_boss_attack(monster,boki,monstername);
+                        choice=0;
+                    }
+                    break;
+                }                    
+                case 4: //고농도물약
+                {
+                    if (boki->consume.potion.redpotion>1)
+                    {
+                        boki->consume.potion.redpotion -= 1;
+                        printf("고농도물약을 사용합니다. 남은 고농도물약개수:%d\n", boki->consume.potion.highpotion);
+                        boki->chp = boki->chp+150;
+                        if(boki->chp > boki->fhp)
+                        {
+                            boki->chp = boki->fhp;
+                        }
+                        printf("현재HP:%d\n", boki->chp);
+                        battle_boss_attack(monster,boki,monstername);
+                        choice=0;
+                    }
+                break; 
+                }
+                
+                default:
+                    break;
+                    
+            }
+        }
+        else if(choice == 3) //도망가기
+        {
+            srand(time(NULL));
+            int random = rand()%100+1; //1부터 100까지 출력
+            if (random <= 30) //1부터 30까지 랜덤수
+                {
+                    printf("%d, 도망성공\n", random);
+                    return 3;
+                }
+            else
+            {
+                printf("%d 도망실패\n", random);
+            }
+            break;
+        }
+    }
+}    
+    
+    
+void battle_boss_attack(Monster *monster, Boki *boki,  int monstername)
+{
+    switch (monstername)
+    {
+        case 2:
+            boki->chp -= monster->hero.damage;
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+        case 3:
+            boki->chp -= monster->Baphomet.damage;
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+        case 4:
+            boki->chp -= monster->boss.damage;
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+        case 5:
+            boki->chp -= monster->realboss.damage;
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+        default:
+            break;
+    }
+}
 
 
+void battle_attack(Monster *monster, Boki *boki, int floor, int monstername)
+{ 
 
 
+    switch (floor)
+    {
+    case 1://오크전사
+            boki->chp -= monster->oaks_warrior.damage; //몬스터의 공격
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+    case 2://좀비
+            boki->chp -= monster->zombie.damage;
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+    case 3: // 구울 전투
+            boki->chp -= monster->ghoul.damage;
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+    case 4:// 스켈레톤 전투
+            boki->chp -= monster->skeleton.damage;
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+    case 5://스파토이
+            boki->chp -= monster->spartoi.damage;
+            printf("boki 남은 hp %d\n", boki->chp);
+            break;
+    default:
+        break;
+
+    }
+}
 
 
+int equip_sword(  Boki* boki){
+    char aaaaaa;
+  static  int depend_choice;
+    
+   
+    // 무기장착
+      while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+        {
+            break;
+        }
+        }
+    // boki->bokiEquipment.weapon.basicsword[depend_choice][1] = 5;// 마스크 첫번째 방어구 방어력 입력 개수, 방어력, 강화
+   
+    // boki->bokiEquipment.weapon.basicsword[0][0] = 1;// 테스트 때문에 방어구 한개 넣어서 확인해보기
+    switch(depend_choice)
+        {   
+            case 0 ://1티어 무기 장착하기
+       static int equip_choice;
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.weapon.basicsword[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n 기본검 %d 번 장비의 공격력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.weapon.basicsword[i][1],boki->bokiEquipment.weapon.basicsword[i][2] );
+                }
+            }
+            printf("번호를 입력하세요. \n");
+        while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+        {
+            break;
+        }
+        } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.weapon.basicsword[equip_choice][0] != 0){ 
+            printf("무기가있네요\n");// 무기가 있는지 확인
+            boki->damage = boki->bokiEquipment.weapon.basicsword[equip_choice][1]; //복이 공격력에 무기 공격력 입히기
+            printf("무기를 장착했습니다.\n");
+            break;
+            }else{
+            printf("무기가 없습니다.\n");
+            break;
+            }
+            case 1 ://2티어 무기 장착하기
+            // int equip_choice;
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.weapon.longsword[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n 장검 %d 번 장비의 공격력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.weapon.longsword[i][1],boki->bokiEquipment.weapon.longsword[i][2] );
+                }
+            }
+            printf("번호를 입력하세요. \n");
+              while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+            {
+                break;
+            }
+            }  //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.weapon.longsword[equip_choice][0] != 0){ // 무기가 있는지 확인
+            boki->damage = boki->bokiEquipment.weapon.longsword[equip_choice][1]; //복이 공격력에 무기 공격력 입히기
+            printf("무기를 장착했습니다.\n");
+            break;
+            }else{
+            printf("무기가 없습니다.\n");
+            break;
+            }
+            case 2 ://1티어 무기 장착하기
+            // int equip_choice;
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.weapon.japensword[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n 일본도 %d 번 장비의 공격력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.weapon.japensword[i][1],boki->bokiEquipment.weapon.japensword[i][2] );
+                }
+            }
+            printf("번호를 입력하세요. \n");
+              while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+            {
+                break;
+            }
+            } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.weapon.japensword[equip_choice][0] != 0){ // 무기가 있는지 확인
+            boki->damage = boki->bokiEquipment.weapon.japensword[equip_choice][1]; //복이 공격력에 무기 공격력 입히기
+            printf("무기를 장착했습니다.\n");
+            break;
+            }else{
+            printf("무기가 없습니다.\n");
+            break;
+            }
+            case 3 ://1티어 무기 장착하기
+            // int equip_choice;
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.weapon.nigthsword_saj[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n 싸울아비장검 %d 번 장비의 공격력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.weapon.nigthsword_saj[i][1],boki->bokiEquipment.weapon.nigthsword_saj[i][2] );
+                }
+            }
+            printf("번호를 입력하세요. \n");
+              while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+            {
+                break;
+            }
+            } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.weapon.nigthsword_saj[equip_choice][0] != 0){ // 무기가 있는지 확인
+            boki->damage = boki->bokiEquipment.weapon.nigthsword_saj[equip_choice][1]; //복이 공격력에 무기 공격력 입히기
+            printf("무기를 장착했습니다.\n");
+            break;
+            }else{
+            printf("무기가 없습니다.\n");
+            break;
+            }
+    }
+    return boki->damage;
+}
+//1티어 방어구 장착하기
+int equip_mask( Boki* boki){
+    char aaaaaa;
+ static   int depend_choice;
+    //초기화
+    
+    // boki->bokiEquipment.nomal.basicmask[0][1] = 0;// 테스트 때문에 방어구 한개 넣어서 확인해보기
+    // printf("%d",boki->bokiEquipment.nomal.basicmask[0][1]);
+    // 1티어 방어구 장착하기
+      while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }
+    switch(depend_choice)
+        {    
+            case 0 ://1티어 마스크 장착하기
+         static  int equip_choice;
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.nomal.basicmask[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n기본마스크 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basicmask[i][1],boki->bokiEquipment.nomal.basicmask[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            }//5개중에 고르기 0~4번
+            if(boki->bokiEquipment.nomal.basicmask[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basicmask[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            printf("%d",boki->bokiEquipment.nomal.basicmask[equip_choice][1]);
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 1 ://1티어 갑바 장착하기
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.rare.k80mask[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\nk80마스크%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.k80mask[i][1],boki->bokiEquipment.rare.k80mask[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.rare.k80mask[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.k80mask[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 2 ://1티어 망토 장착하기
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.epic.k94mask[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\nk94마스크 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.k94mask[i][1],boki->bokiEquipment.epic.k94mask[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            }//5개중에 고르기 0~4번
+            if(boki->bokiEquipment.epic.k94mask[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.k94mask[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 3 ://1티어 장갑 장착하기
+
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.legend.tigermask[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n타이거마스크 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.tigermask[i][1],boki->bokiEquipment.legend.tigermask[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            }//5개중에 고르기 0~4번
+            if(boki->bokiEquipment.legend.tigermask[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.tigermask[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            boki->bokiEquipment.legend.tigermask[equip_choice][0] = 0;
+            printf("%d번 방어구를 장착했습니다.\n",equip_choice);
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+    }
+return boki->def;
+}
+
+//아머 장착하기
+int equip_armor(  Boki* boki){
+    char aaaaaa;
+ static   int depend_choice;
+    //초기화
+   
+    // 아머 장착하기    getchar(aaaaaa);
+    while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }
+    switch(depend_choice)
+        {   
+            case 0 :// 장착하기
+           static int equip_choice;
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.nomal.basicarmor[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n기본갑바%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basicarmor[i][1],boki->bokiEquipment.nomal.basicarmor[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.nomal.basicarmor[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basicarmor[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 1 ://1티어 갑바 장착하기
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.rare.halfarmor[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n반팔갑옷 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.halfarmor[i][1],boki->bokiEquipment.rare.halfarmor[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            }//5개중에 고르기 0~4번
+            if(boki->bokiEquipment.rare.halfarmor[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.halfarmor[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 2 ://1티어 망토 장착하기
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.epic.hoodarmor[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n후드갑바 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.hoodarmor[i][1],boki->bokiEquipment.epic.hoodarmor[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.epic.hoodarmor[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.hoodarmor[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 3 :// 드래곤갑바
+            
+            for(int i=0; i<5; i++){
+            if(boki->bokiEquipment.legend.dragonarmor[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n드래곤갑바 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.dragonarmor[i][1],boki->bokiEquipment.legend.dragonarmor[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            } // 5개중에 고르기 0~4번
+            if(boki->bokiEquipment.legend.dragonarmor[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.dragonarmor[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            } 
+    }
+    return boki->def;
+}
+
+//망토 장착하기
+int equip_cape(  Boki* boki){
+    char aaaaaa;
+  static  int depend_choice;
+    //초기화
+   
+
+    // 3티어 방어구 장착하기    getchar(aaaaaa);
+    while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }
+   static int equip_choice;
+    switch(depend_choice)
+        {   //이거이거 뭐지 이거이거 뭐니
+        //1 티어 방어구를 한번에 착용하기 
+        // 그렇게 하려면 어떻게 해야하지 선택을 하게해서 1티어리스트 뽑아주고 선택하게 하기 
+            case 0 ://마스크 장착하기
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.nomal.basiccape[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n기본망토%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basiccape[i][1],boki->bokiEquipment.nomal.basiccape[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.nomal.basiccape[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basiccape[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 1 :// 갑바 장착하기
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.rare.cottencape[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n천망토 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.cottencape[i][1],boki->bokiEquipment.rare.cottencape[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.rare.cottencape[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.cottencape[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 2 ://1티어 망토 장착하기
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.epic.silkcape[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n실크망토 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.silkcape[i][1],boki->bokiEquipment.epic.silkcape[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.epic.silkcape[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.silkcape[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 3 :// 장갑 장착하기
+            
+            for(int i=0; i<5; i++){
+            if(boki->bokiEquipment.legend.bulletcape[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n방탄망토%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.bulletcape[i][1],boki->bokiEquipment.legend.bulletcape[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+            {
+            aaaaaa=getchar();
+            depend_choice=atoi(&aaaaaa);  
+            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            {
+                break;
+            }
+            } // 5개중에 고르기 0~4번
+            if(boki->bokiEquipment.legend.bulletcape[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.bulletcape[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+    }
+    return boki->def;
+}
+
+//장갑 장착하기
+int equip_gloves(  Boki* boki){
+    char aaaaaa;
+  static  int depend_choice;
+    //초기화
+
+    printf("4티어 방어구입니다.\n");
+    // 4티어 방어구 장착하기    getchar(aaaaaa);
+    while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }
+    switch(depend_choice)
+        { 
+        //4 티어 방어구를 한번에 착용하기 
+        // 그렇게 하려면 어떻게 해야하지 선택을 하게해서 1티어리스트 뽑아주고 선택하게 하기 
+            case 0 ://4티어 마스크 장착하기
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.nomal.basicgloves[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n기본장갑%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basicgloves[i][1],boki->bokiEquipment.nomal.basicgloves[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+          static  int equip_choice;
+            while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }//5개중에 고르기 0~4번
+            if(boki->bokiEquipment.nomal.basicgloves[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basicgloves[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 1 ://4티어 갑바 장착하기
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.rare.rubbergloves[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n고무장갑 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.rubbergloves[i][1],boki->bokiEquipment.rare.rubbergloves[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+           while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }//5개중에 고르기 0~4번
+            if(boki->bokiEquipment.rare.rubbergloves[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.rubbergloves[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 2 ://4티어 망토 장착하기
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.epic.cottengloves[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n천장갑 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.cottengloves[i][1],boki->bokiEquipment.epic.cottengloves[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.epic.cottengloves[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.cottengloves[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 3 ://4티어 장갑 장착하기
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.legend.leardergloves[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n가죽갑옷%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.leardergloves[i][1],boki->bokiEquipment.legend.leardergloves[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+           while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }// 5개중에 고르기 0~4번
+            if(boki->bokiEquipment.legend.leardergloves[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.leardergloves[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }            
+    }
+    return boki->def;
+}
+
+int equip_boots(  Boki* boki){// 부츠
+    char aaaaaa;
+  static  int depend_choice;
+    //초기화
+
+    printf("부츠 장착창입니다..\n");
+    
+    // 4티어 방어구 장착하기    getchar(aaaaaa);
+    while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }
+    switch(depend_choice)
+        { 
+        //4 티어 방어구를 한번에 착용하기 
+        // 그렇게 하려면 어떻게 해야하지 선택을 하게해서 1티어리스트 뽑아주고 선택하게 하기 
+            case 0 ://4티어 마스크 장착하기
+           static int equip_choice;
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.nomal.basicboots[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n기본부츠%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basicboots[i][1],boki->bokiEquipment.nomal.basicboots[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.nomal.basicboots[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basicboots[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 1 ://4티어 갑바 장착하기
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.rare.slipper[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n슬리퍼 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.slipper[i][1],boki->bokiEquipment.rare.slipper[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.rare.slipper[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.slipper[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            case 2 ://4티어 망토 장착하기
+            
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.epic.sneakers[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n스니커즈%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.sneakers[i][1],boki->bokiEquipment.epic.sneakers[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        } //5개중에 고르기 0~4번
+            if(boki->bokiEquipment.epic.sneakers[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.sneakers[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+            for(int i=0; i<5; i++){ //아이템 정보출력
+            if(boki->bokiEquipment.legend.airjodan[i][0] != 0){ //i번째 장비의 정보 출력
+                printf("\n조던%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.airjodan[i][1],boki->bokiEquipment.legend.airjodan[i][2] );
+                }
+            }
+            printf("방어구번호를 입력하세요. \n");
+            while (1)
+        {
+        aaaaaa=getchar();
+        depend_choice=atoi(&aaaaaa);  
+        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        {
+            break;
+        }
+        }//타이거 마스크 5개중에 고르기 0~4번
+            if(boki->bokiEquipment.legend.airjodan[equip_choice][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.airjodan[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            printf("방어구를 장착했습니다.\n");
+            break;
+            }else{
+            printf("방어구가 없습니다.\n");
+            break;
+            }
+    }
+    return boki->def;
+}
+
+int equip(Boki* boki){
+    
+    int sum;
+    printf("\n장비 장착창입니다 \n");
+   
+
+    printf("무기창입니다\n");
+    printf("0번기본검   1번 장검    2번 일본도     3번 싸울아비장검\n");
+        boki->def = 0;
+        boki->damage = 0;
+        sum +=  equip_sword( boki);
+
+    printf("마스크 장비창입니다.\n");
+    printf("0번 기본마스크      1번 k84마스크       2번k90마스크        3번타이거마스크     \n");
+       sum +=  equip_mask(boki);
+
+    printf("갑바 장비창입니다.\n");
+    printf("0번 기본갑바      1번 반팔갑바       2번 후드갑바        3번용갑바     \n");
+
+       sum +=  equip_armor(boki);
+
+    printf("망토 장비창입니다.\n");
+    printf("0번 기본망토      1번 면망토       2번 비단망토        3번 방탄망토     \n");
+
+        sum +=   equip_cape(boki);
+
+    printf("장갑 장비창입니다.\n");
+    printf("0번 기본장갑      1번 고무장갑       2번 면장갑        3번 가죽장갑     \n");
+
+       sum +=  equip_gloves(boki);
+    printf("부츠 장비창입니다.\n");
+    printf("0번 기본부츠      1번 슬리퍼       2번 스니커즈        3번 조던     \n");
+
+       sum +=  equip_boots(boki);
+    
+    return sum;
+}
+
+void reinforce(Boki* boki)
+{
+    char bb;
+    int re;
+    int re2;
+    int re3;
+    printf("어떤 장비를 강화 하고 싶습니까?\n");
+    printf("1) 무기 2) 아머 3) 마스크 4) 망토 5)장갑 6)부츠\n");
+    while (1)
+    {
+    bb=getchar();
+    re=atoi(&bb);
+    if(re == 1 || re ==2||re ==3||re ==4||re ==5||re ==6)
+    {
+        break;
+    }    
+    }
+    
+    switch (re)
+    {
+    case 1:
+        printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본검 2) 일본검 3) 장검 4) 싸울아비장검\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+        case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.weapon.basicsword[i][0] !=0) 
+                    printf("basicsword%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.weapon.basicsword[0][0]==0)
+                        break;
+                WReinForcement(boki,0,basicsword,0);
+            break;
+           case 1:
+                if(boki->bokiEquipment.weapon.basicsword[1][0]==0)
+                        break;
+                WReinForcement(boki,1,basicsword,0);
+            break;
+            case 2:
+                if(boki->bokiEquipment.weapon.basicsword[2][0]==0)
+                        break;
+                WReinForcement(boki,2,basicsword,0);
+            break;
+            case 3:
+                if(boki->bokiEquipment.weapon.basicsword[3][0]==0)
+                        break;
+                WReinForcement(boki,3,basicsword,0);
+            break;
+            case 4:
+                if(boki->bokiEquipment.weapon.basicsword[4][0]==0)
+                        break;
+                WReinForcement(boki,4,basicsword,0);
+            break;
+            default:
+                break;
+            }
+            break;
+        
+        case 2:
+        
+            while (1)
+            {
+            bb=getchar();
+            re2=atoi(&bb);
+            if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re2)
+            {
+            case 1:
+                for (int i = 0; i < 5; i++)
+                {
+                if   (boki->bokiEquipment.weapon.japensword[i][0] !=0) 
+                        printf("japensword%d번째 장비입니다\n",i);
+                }
+                printf("몇번째 장비를 강화 하시겠습니까?\n");
+                while (1)
+                {
+                bb=getchar();
+                re3=atoi(&bb);
+                if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+                {
+                    break;
+                }    
+                }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.weapon.japensword[0][0]==0)
+                            break;
+                    WReinForcement(boki,0,japensword,1);
+                break;
+            case 1:
+                    if(boki->bokiEquipment.weapon.japensword[1][0]==0)
+                            break;
+                    WReinForcement(boki,1,japensword,1);
+                break;
+                case 2:
+                    if(boki->bokiEquipment.weapon.japensword[2][0]==0)
+                            break;
+                WReinForcement(boki,2,japensword,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.weapon.japensword[3][0]==0)
+                            break;
+                    WReinForcement(boki,3,japensword,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.weapon.japensword[4][0]==0)
+                            break;
+                    WReinForcement(boki,4,japensword,1);
+                break;
+                default:
+                    break;
+                }
+                //여기까지
+                
+                break;
+            }
+        
+         case 3:
+            for (int i = 0; i < 5; i++)
+            {
+             if   (boki->bokiEquipment.weapon.longsword[i][0]!=0)
+                printf("longsword%d번째 장비입니다\n",i);
+            }
+            //여기까지
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.weapon.longsword[0][0]==0)
+                        break;
+                WReinForcement(boki,0,longsword,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.weapon.longsword[1][0]==0)
+                        break;
+                 WReinForcement(boki,1,longsword,1);
+            break;
+            case 2:
+                if(boki->bokiEquipment.weapon.longsword[2][0]==0)
+                        break;
+               WReinForcement(boki,2,longsword,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.weapon.longsword[3][0]==0)
+                        break;
+                WReinForcement(boki,3,longsword,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.weapon.longsword[4][0]==0)
+                        break;
+                WReinForcement(boki,4,longsword,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.weapon.nigthsword_saj[i][0]!=0)
+                printf("nigthsword_saj%d번째 장비입니다\n",i);
+            }
+            //여기까지
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+        {
+            case 0:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[0][0]==0)
+                        break;
+                WReinForcement(boki,0,nigthsword_saj,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[1][0]==0)
+                        break;
+                 WReinForcement(boki,1,nigthsword_saj,1);
+            break;
+            case 2:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[2][0]==0)
+                        break;
+               WReinForcement(boki,2,nigthsword_saj,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[3][0]==0)
+                        break;
+                WReinForcement(boki,3,nigthsword_saj,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[4][0]==0)
+                        break;
+                WReinForcement(boki,4,nigthsword_saj,1);
+            break;
+            }
+       }     //여기까지
+        break;
+case 2:
+        //dddd
+        printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본아머 2) 반팔아머 3) 후드아머 4) 용갑빠\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+        case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basicarmor[i][0] !=0) 
+                    printf("basicarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basicarmor[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,armor,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basicarmor[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,armor,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basicarmor[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,armor,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basicarmor[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,armor,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basicarmor[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,armor,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+        case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.halfarmor[i][0] !=0) 
+                    printf("halfarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.halfarmor[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,armor,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.halfarmor[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,armor,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.halfarmor[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,armor,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.halfarmor[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,armor,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.halfarmor[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,armor,1);
+            break;
+            default:
+                break;
+            }
+            break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.hoodarmor[i][0] !=0) 
+                    printf("hoodarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.hoodarmor[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,armor,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.hoodarmor[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,armor,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.hoodarmor[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,armor,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.hoodarmor[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,armor,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.hoodarmor[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,armor,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.legend.dragonarmor[i][0] !=0) 
+                    printf("dragonarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.dragonarmor[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,armor,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.dragonarmor[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,armor,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.dragonarmor[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,armor,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.dragonarmor[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,armor,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.dragonarmor[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,armor,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        
+        }
+        break;
+    //여기까지 가장큰거
+    case 3:
+        printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본마스크 2) k80마스크 3) k94마스크 4) 타이거마스크\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+    case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basicmask[i][0] !=0) 
+                    printf("basicmask%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basicmask[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,mask,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basicmask[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,mask,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basicmask[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,mask,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basicmask[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,mask,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basicmask[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,mask,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+    case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.k80mask[i][0] !=0) 
+                    printf("k80mask%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.k80mask[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,mask,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.k80mask[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,mask,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.k80mask[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,mask,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.k80mask[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,armor,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.k80mask[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,armor,1);
+            break;
+            default:
+                break;
+            }
+        break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.k94mask[i][0] !=0) 
+                    printf("hoodarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.k94mask[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,mask,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.k94mask[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,armor,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.k94mask[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,mask,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.k94mask[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,mask,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.k94mask[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,mask,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if (boki->bokiEquipment.legend.tigermask[i][0] !=0) 
+                    printf("tigermask%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.tigermask[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,mask,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.tigermask[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,mask,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.tigermask[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,mask,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.tigermask[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,mask,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.tigermask[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,mask,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        default:
+            break;
+         }
+        break;
+    //여기까지 가장큰거
+case 4:
+   printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본망토 2) 면망토 3) 비단망토 4) 방탄망토\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+    case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basiccape[i][0] !=0) 
+                    printf("basiccape%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basiccape[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,cape,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basiccape[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,cape,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basiccape[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,cape,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basiccape[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,cape,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basiccape[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,cape,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+    case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.cottencape[i][0] !=0) 
+                    printf("cottencape%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.cottencape[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,cape,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.cottencape[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,cape,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.cottencape[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,cape,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.cottencape[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,cape,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.cottencape[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,cape,1);
+            break;
+            default:
+                break;
+            }
+        break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.silkcape[i][0] !=0) 
+                    printf("silkcape%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.silkcape[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,cape,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.silkcape[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,cape,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.silkcape[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,cape,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.silkcape[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,cape,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.silkcape[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,cape,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if (boki->bokiEquipment.legend.bulletcape[i][0] !=0) 
+                    printf("bulletcape%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.bulletcape[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,cape,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.bulletcape[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,cape,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.bulletcape[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,cape,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.bulletcape[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,cape,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.bulletcape[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,cape,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        default:
+            break;
+         }
+        break;
+    //여기까지 왕큰거
+    case 5:
+       printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본장갑 2) 고무장갑 3) 면장갑 4) 가죽장갑\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+    case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basicgloves[i][0] !=0) 
+                    printf("basicgloves%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basicgloves[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,gloves,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basicgloves[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,gloves,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basicgloves[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,gloves,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basicgloves[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,gloves,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basicgloves[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,gloves,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+    case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.rubbergloves[i][0] !=0) 
+                    printf("ru&bbergloves%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.rubbergloves[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,gloves,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.rubbergloves[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,gloves,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.rubbergloves[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,gloves,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.rubbergloves[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,gloves,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.rubbergloves[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,gloves,1);
+            break;
+            default:
+                break;
+            }
+        break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.cottengloves[i][0] !=0) 
+                    printf("cottengloves%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.cottengloves[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,gloves,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.cottengloves[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,gloves,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.cottengloves[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,gloves,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.cottengloves[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,gloves,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.cottengloves[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,gloves,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if (boki->bokiEquipment.legend.leardergloves[i][0] !=0) 
+                    printf("leardergloves%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.leardergloves[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,gloves,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.leardergloves[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,gloves,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.bulletcape[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,gloves,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.leardergloves[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,gloves,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.leardergloves[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,gloves,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        default:
+            break;
+         }
+        break;
+    //여기까지 왕큰거
+    case 6:
+       printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본부츠 2) 슬리퍼 3) 운동화 4) 에어조단");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+    case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basicboots[i][0] !=0) 
+                    printf("basicboots%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basicboots[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,boots,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basicboots[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,boots,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basicboots[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,boots,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basicboots[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,boots,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basicboots[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,boots,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+    case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.slipper[i][0] !=0) 
+                    printf("slipper%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.slipper[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,boots,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.slipper[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,boots,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.slipper[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,boots,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.slipper[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,boots,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.slipper[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,boots,1);
+            break;
+            default:
+                break;
+            }
+        break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.sneakers[i][0] !=0) 
+                    printf("sneakers%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.sneakers[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,boots,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.sneakers[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,boots,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.sneakers[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,boots,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.sneakers[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,boots,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.sneakers[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,boots,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if (boki->bokiEquipment.legend.airjodan[i][0] !=0) 
+                    printf("airjodan%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.airjodan[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,boots,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.airjodan[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,boots,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.airjodan[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,boots,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.airjodan[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,boots,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.airjodan[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,boots,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        default:
+            break;
+         }
+        break;
+    //여기까지 왕큰거
+    }
+    
+    
+}
+
+void Ereinforce(Boki* boki)
+{
+    char bb;
+    int re;
+    int re2;
+    int re3;
+    printf("어떤 장비를 강화 하고 싶습니까?\n");
+    printf("1) 무기 2) 아머 3) 마스크 4) 망토 5)장갑 6)부츠\n");
+    while (1)
+    {
+    bb=getchar();
+    re=atoi(&bb);
+    if(re == 1 || re ==2||re ==3||re ==4||re ==5||re ==6)
+    {
+        break;
+    }    
+    }
+    
+    switch (re)
+    {
+    case 1:
+        printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본검 2) 일본검 3) 장검 4) 싸울아비장검\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+        case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.weapon.basicsword[i][0] !=0) 
+                    printf("basicsword%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.weapon.basicsword[0][0]==0)
+                        break;
+                WReinForcement(boki,0,basicsword,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.weapon.basicsword[1][0]==0)
+                        break;
+                WReinForcement(boki,1,basicsword,1);
+            break;
+            case 2:
+                if(boki->bokiEquipment.weapon.basicsword[2][0]==0)
+                        break;
+                WReinForcement(boki,2,basicsword,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.weapon.basicsword[3][0]==0)
+                        break;
+                WReinForcement(boki,3,basicsword,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.weapon.basicsword[4][0]==0)
+                        break;
+                WReinForcement(boki,4,basicsword,1);
+            break;
+            default:
+                break;
+            }
+            break;
+        
+        case 2:
+        
+            while (1)
+            {
+            bb=getchar();
+            re2=atoi(&bb);
+            if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re2)
+            {
+            case 1:
+                for (int i = 0; i < 5; i++)
+                {
+                if   (boki->bokiEquipment.weapon.japensword[i][0] !=0) 
+                        printf("japensword%d번째 장비입니다\n",i);
+                }
+                printf("몇번째 장비를 강화 하시겠습니까?\n");
+                while (1)
+                {
+                bb=getchar();
+                re3=atoi(&bb);
+                if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+                {
+                    break;
+                }    
+                }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.weapon.japensword[0][0]==0)
+                            break;
+                    WReinForcement(boki,0,japensword,1);
+                break;
+            case 1:
+                    if(boki->bokiEquipment.weapon.japensword[1][0]==0)
+                            break;
+                    WReinForcement(boki,1,japensword,1);
+                break;
+                case 2:
+                    if(boki->bokiEquipment.weapon.japensword[2][0]==0)
+                            break;
+                WReinForcement(boki,2,japensword,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.weapon.japensword[3][0]==0)
+                            break;
+                    WReinForcement(boki,3,japensword,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.weapon.japensword[4][0]==0)
+                            break;
+                    WReinForcement(boki,4,japensword,1);
+                break;
+                default:
+                    break;
+                }
+                //여기까지
+                
+                break;
+            }
+        
+         case 3:
+            for (int i = 0; i < 5; i++)
+            {
+             if   (boki->bokiEquipment.weapon.longsword[i][0]!=0)
+                printf("longsword%d번째 장비입니다\n",i);
+            }
+            //여기까지
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.weapon.longsword[0][0]==0)
+                        break;
+                WReinForcement(boki,0,longsword,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.weapon.longsword[1][0]==0)
+                        break;
+                 WReinForcement(boki,1,longsword,1);
+            break;
+            case 2:
+                if(boki->bokiEquipment.weapon.longsword[2][0]==0)
+                        break;
+               WReinForcement(boki,2,longsword,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.weapon.longsword[3][0]==0)
+                        break;
+                WReinForcement(boki,3,longsword,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.weapon.longsword[4][0]==0)
+                        break;
+                WReinForcement(boki,4,longsword,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.weapon.nigthsword_saj[i][0]!=0)
+                printf("nigthsword_saj%d번째 장비입니다\n",i);
+            }
+            //여기까지
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+        {
+            case 0:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[0][0]==0)
+                        break;
+                WReinForcement(boki,0,nigthsword_saj,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[1][0]==0)
+                        break;
+                 WReinForcement(boki,1,nigthsword_saj,1);
+            break;
+            case 2:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[2][0]==0)
+                        break;
+               WReinForcement(boki,2,nigthsword_saj,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[3][0]==0)
+                        break;
+                WReinForcement(boki,3,nigthsword_saj,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.weapon.nigthsword_saj[4][0]==0)
+                        break;
+                WReinForcement(boki,4,nigthsword_saj,1);
+            break;
+            }
+       }     //여기까지
+        break;
+case 2:
+        //dddd
+        printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본아머 2) 반팔아머 3) 후드아머 4) 용갑빠\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+        case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basicarmor[i][0] !=0) 
+                    printf("basicarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basicarmor[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,armor,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basicarmor[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,armor,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basicarmor[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,armor,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basicarmor[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,armor,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basicarmor[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,armor,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+        case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.halfarmor[i][0] !=0) 
+                    printf("halfarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.halfarmor[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,armor,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.halfarmor[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,armor,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.halfarmor[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,armor,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.halfarmor[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,armor,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.halfarmor[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,armor,1);
+            break;
+            default:
+                break;
+            }
+            break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.hoodarmor[i][0] !=0) 
+                    printf("hoodarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.hoodarmor[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,armor,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.hoodarmor[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,armor,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.hoodarmor[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,armor,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.hoodarmor[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,armor,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.hoodarmor[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,armor,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.legend.dragonarmor[i][0] !=0) 
+                    printf("dragonarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.dragonarmor[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,armor,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.dragonarmor[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,armor,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.dragonarmor[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,armor,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.dragonarmor[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,armor,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.dragonarmor[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,armor,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        
+        }
+        break;
+    //여기까지 가장큰거
+    case 3:
+        printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본마스크 2) k80마스크 3) k94마스크 4) 타이거마스크\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+    case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basicmask[i][0] !=0) 
+                    printf("basicmask%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basicmask[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,mask,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basicmask[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,mask,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basicmask[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,mask,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basicmask[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,mask,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basicmask[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,mask,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+    case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.k80mask[i][0] !=0) 
+                    printf("k80mask%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.k80mask[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,mask,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.k80mask[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,mask,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.k80mask[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,mask,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.k80mask[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,armor,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.k80mask[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,armor,1);
+            break;
+            default:
+                break;
+            }
+        break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.k94mask[i][0] !=0) 
+                    printf("hoodarmor%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.k94mask[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,mask,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.k94mask[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,armor,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.k94mask[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,mask,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.k94mask[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,mask,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.k94mask[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,mask,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if (boki->bokiEquipment.legend.tigermask[i][0] !=0) 
+                    printf("tigermask%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.tigermask[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,mask,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.tigermask[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,mask,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.tigermask[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,mask,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.tigermask[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,mask,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.tigermask[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,mask,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        default:
+            break;
+         }
+        break;
+    //여기까지 가장큰거
+case 4:
+   printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본망토 2) 면망토 3) 비단망토 4) 방탄망토\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+    case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basiccape[i][0] !=0) 
+                    printf("basiccape%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basiccape[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,cape,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basiccape[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,cape,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basiccape[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,cape,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basiccape[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,cape,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basiccape[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,cape,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+    case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.cottencape[i][0] !=0) 
+                    printf("cottencape%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.cottencape[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,cape,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.cottencape[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,cape,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.cottencape[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,cape,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.cottencape[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,cape,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.cottencape[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,cape,1);
+            break;
+            default:
+                break;
+            }
+        break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.silkcape[i][0] !=0) 
+                    printf("silkcape%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.silkcape[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,cape,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.silkcape[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,cape,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.silkcape[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,cape,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.silkcape[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,cape,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.silkcape[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,cape,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if (boki->bokiEquipment.legend.bulletcape[i][0] !=0) 
+                    printf("bulletcape%d번째 장비입니다\n",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.bulletcape[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,cape,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.bulletcape[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,cape,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.bulletcape[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,cape,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.bulletcape[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,cape,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.bulletcape[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,cape,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        default:
+            break;
+         }
+        break;
+    //여기까지 왕큰거
+    case 5:
+       printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본장갑 2) 고무장갑 3) 면장갑 4) 가죽장갑\n");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+    case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basicgloves[i][0] !=0) 
+                    printf("basicgloves%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basicgloves[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,gloves,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basicgloves[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,gloves,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basicgloves[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,gloves,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basicgloves[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,gloves,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basicgloves[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,gloves,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+    case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.rubbergloves[i][0] !=0) 
+                    printf("ru&bbergloves%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.rubbergloves[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,gloves,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.rubbergloves[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,gloves,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.rubbergloves[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,gloves,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.rubbergloves[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,gloves,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.rubbergloves[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,gloves,1);
+            break;
+            default:
+                break;
+            }
+        break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.cottengloves[i][0] !=0) 
+                    printf("cottengloves%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.cottengloves[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,gloves,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.cottengloves[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,gloves,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.cottengloves[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,gloves,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.cottengloves[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,gloves,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.cottengloves[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,gloves,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if (boki->bokiEquipment.legend.leardergloves[i][0] !=0) 
+                    printf("leardergloves%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.leardergloves[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,gloves,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.leardergloves[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,gloves,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.bulletcape[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,gloves,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.leardergloves[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,gloves,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.leardergloves[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,gloves,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        default:
+            break;
+         }
+        break;
+    //여기까지 왕큰거
+    case 6:
+       printf("어떤 장비를 강화 하고 싶습니까?\n");
+        printf("1) 기본부츠 2) 슬리퍼 3) 운동화 4) 에어조단");
+        while (1)
+        {
+        bb=getchar();
+        re2=atoi(&bb);
+        if(re2 == 1 || re2 ==2||re2 ==3||re2 ==4)
+        {
+            break;
+        }    
+        }
+        switch (re2)
+        {
+    case 1:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.nomal.basicboots[i][0] !=0) 
+                    printf("basicboots%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3==0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+                switch (re3)
+                {
+                case 0:
+                    if(boki->bokiEquipment.nomal.basicboots[0][0]==0)
+                            break;
+                    FDepReinForce(boki,0,boots,1);
+                break;
+                case 1:
+                    if(boki->bokiEquipment.nomal.basicboots[1][0]==0)
+                            break;
+                FDepReinForce(boki,1,boots,1);  
+                    break;
+                case 2:
+                    if(boki->bokiEquipment.nomal.basicboots[2][0]==0)
+                            break;
+                    FDepReinForce(boki,2,boots,1);
+                break;
+                case 3:
+                    if(boki->bokiEquipment.nomal.basicboots[3][0]==0)
+                            break;
+                    FDepReinForce(boki,3,boots,1);
+                break;
+                case 4:
+                    if(boki->bokiEquipment.nomal.basicboots[4][0]==0)
+                            break;
+                    FDepReinForce(boki,4,boots,1);
+                break;
+                default:
+                    break;
+                }
+                break;
+    case 2:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.rare.slipper[i][0] !=0) 
+                    printf("slipper%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            //w
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            //w
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.rare.slipper[0][0]==0)
+                        break;
+                SDepReinForce(boki,0,boots,1);
+            break;
+            case 1:
+                if(boki->bokiEquipment.rare.slipper[1][0]==0)
+                        break;
+            SDepReinForce(boki,1,boots,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.rare.slipper[2][0]==0)
+                        break;
+                SDepReinForce(boki,2,boots,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.rare.slipper[3][0]==0)
+                        break;
+                SDepReinForce(boki,3,boots,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.rare.slipper[4][0]==0)
+                        break;
+                SDepReinForce(boki,4,boots,1);
+            break;
+            default:
+                break;
+            }
+        break;
+        
+        
+        case 3:
+            for (int i = 0; i < 5; i++)
+            {
+            if   (boki->bokiEquipment.epic.sneakers[i][0] !=0) 
+                    printf("sneakers%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.epic.sneakers[0][0]==0)
+                        break;
+                TDepReinForce(boki,0,boots,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.epic.sneakers[1][0]==0)
+                        break;
+               TDepReinForce(boki,1,boots,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.epic.sneakers[2][0]==0)
+                        break;
+                TDepReinForce(boki,2,boots,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.epic.sneakers[3][0]==0)
+                        break;
+                TDepReinForce(boki,3,boots,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.epic.sneakers[4][0]==0)
+                        break;
+                TDepReinForce(boki,4,boots,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        case 4:
+             for (int i = 0; i < 5; i++)
+            {
+            if (boki->bokiEquipment.legend.airjodan[i][0] !=0) 
+                    printf("airjodan%d번째 장비입니다",i);
+            }
+            printf("몇번째 장비를 강화 하시겠습니까?\n");
+            while (1)
+            {
+            bb=getchar();
+            re3=atoi(&bb);
+            if(re3 == 0|| re3 == 1 || re3 ==2||re3 ==3||re3 ==4)
+            {
+                break;
+            }    
+            }
+            switch (re3)
+            {
+            case 0:
+                if(boki->bokiEquipment.legend.airjodan[0][0]==0)
+                        break;
+                FoDepReinForce(boki,0,boots,1);
+            break;
+           case 1:
+                if(boki->bokiEquipment.legend.airjodan[1][0]==0)
+                        break;
+               FoDepReinForce(boki,1,boots,1);  
+                break;
+            case 2:
+                if(boki->bokiEquipment.legend.airjodan[2][0]==0)
+                        break;
+                FoDepReinForce(boki,2,boots,1);
+            break;
+            case 3:
+                if(boki->bokiEquipment.legend.airjodan[3][0]==0)
+                        break;
+                FoDepReinForce(boki,3,boots,1);
+            break;
+            case 4:
+                if(boki->bokiEquipment.legend.airjodan[4][0]==0)
+                        break;
+                FoDepReinForce(boki,4,boots,1);
+            break;
+            default:
+                break;
+            }
+            //여기까지
+            break;
+        default:
+            break;
+         }
+        break;
+    //여기까지 왕큰거
+    }
+    
+    
+}
