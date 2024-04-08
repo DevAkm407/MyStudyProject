@@ -23,8 +23,6 @@ Monster* MonsterInitialization(Monster* imonster);
 
 Monster* MonterRegenerative(Monster* rm, Boki* boki, User* user);
 
-Monster* MonsterInitialization(Monster* imonster);
-
 //강화 함수들 엘릭서 사용시 엘리서부분을 1로 설정할것
 void WReinForcement(Boki* boki, int count, int armed,int elixir);
 
@@ -56,6 +54,10 @@ int drop_4teer10(Boki* boki);
 
 int drop_4teer20(Boki* boki);
 
+int town_movement(Boki* boki);
+
+int tp_movement(Boki* boki);
+
 int elixir_drop(Boki* boki,Monster* monster,int a);
 
 //소비창 사용
@@ -70,7 +72,6 @@ void TpsUseMove(User* user,Boki* boki);
 void Pandora(Boki* boki);
 
 void Prist(Boki* boki);
-
 
 void Dwarf(Boki* boki);
 //전투함수,층마다 일반몬스터만 상대
@@ -99,6 +100,8 @@ int equip(Boki* boki);
 void reinforce(Boki* boki);
 
 void Ereinforce(Boki* boki);
+//전방끝
+
 //기본 터미널 모드 저장
 void save_input_mode(void)
 {
@@ -126,11 +129,11 @@ int movement(void)
     save_input_mode();
     set_input_mode();
     char ch;
-    if ((ch = getchar()) == 101 ||ch == 108||ch==116||ch==105)
+    while(1){
+    if ((ch = getchar()) == 101 ||ch == 108 || ch==116 || ch==105 || ch == 65 || ch == 66 || ch== 67 || ch == 68)
         return ch;
-    ch=getchar();
-    ch=getchar();
-  return ch;  
+    }
+    return 0;
 }
 
 int gold_drop(Boki* boki,int floor)/*골드 드랍 함수*/
@@ -652,7 +655,7 @@ int drop_4teer20(Boki* boki) /*4티어 20프로 드랍 함수*/
     return twen;
 }
 
-int town_movement(Boki* boki)/*순간이동 주문서 획득*/
+int town_movement(Boki* boki)/*마을이동 주문서 획득*/
 {
     boki->consume.scroll.tmscrollpaper;
     srand(time(NULL));/*랜덤사용*/
@@ -662,7 +665,29 @@ int town_movement(Boki* boki)/*순간이동 주문서 획득*/
     if (get_chance<=20)/*20보다 작거나 같으면*/
     {
         tm=rand()%3+1; /*획득 개수는 1~3개*/
-        boki->consume.scroll.tmscrollpaper+tm;
+        boki->consume.scroll.tmscrollpaper+=tm;
+        //*item_address.address_tmscrollpaper=item_table.scroll.tmscrollpaper+=tm;
+        printf("마을이동주문서 %d개획득\n",tm);
+    }
+    else
+    {
+        tm=0;
+        printf("마을이동주문서를 획득하지 않았습니다.\n");
+    }
+    
+    return tm;/*획득 개수 리턴*/
+}
+
+int tp_movement(Boki* boki)/*순간이동 주문서 획득*/
+{
+    srand(time(NULL));/*랜덤사용*/
+    int get_chance; /*획득확률*/
+    int tm;
+    get_chance=rand()%100+1;/*1~100까지*/
+    if (get_chance<=30)/*20보다 작거나 같으면*/
+    {
+        tm=rand()%3+1; /*획득 개수는 1~3개*/
+        boki->consume.scroll.teleportscroll+=tm;
         //*item_address.address_tmscrollpaper=item_table.scroll.tmscrollpaper+=tm;
         printf("순간이동주문서 %d개획득\n",tm);
     }
@@ -674,6 +699,9 @@ int town_movement(Boki* boki)/*순간이동 주문서 획득*/
     
     return tm;/*획득 개수 리턴*/
 }
+
+
+
 
 int drop_4teer10(Boki* boki) /*4티어 10프로 드랍 함수*/
 {
@@ -777,7 +805,7 @@ User* UserPointInitialization(User* user)
 User* UserMovement(User* user,maps* monmap,Monster* rm,Boki* boki)
 {
 //위 65 아레 66 왼쪽 68 오른족 67
-    rm = MonterRegenerative(rm, boki, user);
+    
     int mov=movement();
 user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]]=' ';
 switch (mov)
@@ -856,7 +884,16 @@ return user;
 //맵을 보여주고 사용자가 몬스터를 만났을때 상호 작용을 하는 함수
 User* ShowMap(User* user,maps* monmap,Boki* boki,Monster* rm)
 {
+    srand(time(NULL));
+   static char* name[28]={"강진영","권철민","김건","김민아","김성근",
+    "김승수","김영곤","김재신","김혜빈","노주영","박민건","박선후"
+    ,"박장미","박희정","서훈","안광민","오은지","유시온","이동준",
+    "이준호","이은승","이준호","이철","임석현","조대정","조세빈",
+    "황운하","황은비"};
+    rm = MonterRegenerative(rm, boki, user);
+    int lms;
     int battle1=1;
+    int rbattle=10;
     if(user->floorcount[0]!=5&&user->userPoint[0]==49&&user->userPoint[1]==49){
     printf("다음층으로 이동하시겠습니까?y or n\n");
     char ch=getchar();
@@ -919,6 +956,7 @@ for (int i = 0; i < 50; i++)
         } 
         printf("\n");
     }
+
 switch (user->floorcount[0])
 {
 case 0:
@@ -955,9 +993,8 @@ case 1:
             boki->fhp*=1.01;
             monmap->firstfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
             user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';      
-        break;
         }
-        else if(battle1 ==0)
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
@@ -966,34 +1003,44 @@ case 1:
             user->fcinterrupt[0]=-1;      
             break;
         }
-        else
+        else if(battle1==3)
             break;
+    break;       
     case students:
         //학생용사들과 전투
         system("clear");
-        if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
+        
+        while(rbattle <=30){
+        if(battle1=battle_boss(rm,boki,students)== 1)
         {
+            lms=rand()%29;
+            rm->hero.name=name[lms];
+            rm->hero.hp=boki->chp *2;
             gold_drop_boss(boki,students-1);
             town_movement(boki);
+            tp_movement(boki);
             drop_2teer20(boki);
             drop_3teer20(boki);
             boki->fhp*=1.20;
             monmap->firstfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
             user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';      
-        break;
+            rbattle=rand()%100;
         }
-        else if(battle1 ==0)
+        
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
             user->userPoint[1]=0;
             user->fcinterrupt[0]=-1;      
-            break;
-        }
-        break;
+            rbattle=100;
+        } 
+        else if(battle1==3)
+            rbattle=100;
     }
-    
+    break;
+    }
     break;
 case 2:
     switch (monmap->secondfloor.monstermaps[user->userPoint[0]][user->userPoint[1]])
@@ -1001,16 +1048,15 @@ case 2:
     case nomal:
         //2층 일반 몬스터와 전투
          system("clear");
-         if(battle1=battle(rm,boki,user->floorcount[0],nomal)== 1)
+        if(battle1=battle(rm,boki,user->floorcount[0],nomal)== 1)
         {
             gold_drop(boki,user->floorcount[0]);
             town_movement(boki);
             boki->fhp*=1.02;
             monmap->secondfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
         }
-        else if(battle1 ==0)
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
@@ -1019,33 +1065,45 @@ case 2:
             user->fcinterrupt[0]=-1;      
               break;
         }
-       else
+       else if(battle1==3)
             break;
+    break;
     case students:
         //학생용사들과 전투
          system("clear");
-         if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
+        while(rbattle <=30){
+        if(battle1=battle_boss(rm,boki,students)== 1)
         {
+            lms=rand()%29;
+            rm->hero.name=name[lms];
+            rm->hero.hp=boki->chp *2;
             gold_drop_boss(boki,students-1);
             town_movement(boki);
+            tp_movement(boki);
             drop_2teer20(boki);
             drop_3teer20(boki);
             boki->fhp*=1.20;
-        monmap->secondfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
-        user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
+            //여기까지 보지마
+            monmap->secondfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
+            //여기야 여기
+            user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';      
+            
+            rbattle=rand()%100;
         }
-        else if(battle1 ==0)
+        
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
             user->userPoint[1]=0;
             user->fcinterrupt[0]=-1;      
-            break;
-        }
-        else
-            break;
+            rbattle=100;
+        } 
+        else if(battle1==3)
+            rbattle= 100;
+    }
+    break;
     }
     break;
 case 3:
@@ -1061,9 +1119,8 @@ case 3:
             boki->fhp*=1.03;
         monmap->thirdfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
         }
-        else if(battle1 ==0)
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
@@ -1072,33 +1129,45 @@ case 3:
             user->fcinterrupt[0]=-1;      
               break;
         }
-    else    
-        break;
+       else if(battle1==3)
+            break;
+    break;       
     case students:
         //학생용사들과 전투
          system("clear");
-        if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
+        while(rbattle <=30){
+        if(battle1=battle_boss(rm,boki,students)== 1)
         {
+            lms=rand()%29;
+            rm->hero.name=name[lms];
+            rm->hero.hp=boki->chp *2;
             gold_drop_boss(boki,students-1);
             town_movement(boki);
+            tp_movement(boki);
             drop_2teer20(boki);
             drop_3teer20(boki);
             boki->fhp*=1.20;
-        monmap->thirdfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
-        user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
+            //여기까지 보지마
+            monmap->thirdfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
+            //여기야 여기
+            user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';      
+            
+            rbattle=rand()%100;
         }
-        else if(battle1 ==0)
+        
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
             user->userPoint[1]=0;
             user->fcinterrupt[0]=-1;      
-            break;
-        }
-    else
-        break;
+            rbattle=100;
+        } 
+        else if(battle1==3)
+            rbattle= 100;
+    }
+    break;
     }
     
     break;
@@ -1116,9 +1185,8 @@ case 4:
             boki->fhp*=1.05;
         monmap->fourthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
         }
-        else if(battle1 ==0)
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
@@ -1127,33 +1195,44 @@ case 4:
             user->fcinterrupt[0]=-1;      
               break;
         }
-    else   
-        break;
+      else if(battle1==3)
+            break;
+    break;       
     case students:
         //학생용사들과 전투
         system("clear");
-        if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
+        while(rbattle <=30){
+        if(battle1=battle_boss(rm,boki,students)== 1)
         {
+            lms=rand()%29;
+            rm->hero.name=name[lms];
+            rm->hero.hp=boki->chp *2;
             gold_drop_boss(boki,students-1);
             town_movement(boki);
+            tp_movement(boki);
             drop_2teer20(boki);
             drop_3teer20(boki);
             boki->fhp*=1.20;
-        monmap->fourthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
-        user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
+            //여기까지 보지마
+            monmap->fourthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
+            //여기야 여기
+            user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';      
+            rbattle=rand()%100;
         }
-        else if(battle1 ==0)
+        
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
             user->userPoint[1]=0;
             user->fcinterrupt[0]=-1;      
-            break;
-        }
-    else  
-        break;
+            rbattle=100;
+        } 
+        else if(battle1==3)
+            rbattle= 100;
+    }
+    break;
     } 
 break;
 case 5:
@@ -1170,9 +1249,8 @@ case 5:
             boki->fhp*=1.07;
         monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
         }
-        else if(battle1 ==0)
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
@@ -1181,33 +1259,38 @@ case 5:
             user->fcinterrupt[0]=-1;      
               break;
         }
-     else   
-        break;
+      else if(battle1==3)
+            break;
+    break;       
     case students:
         //학생용사들과 전투
         system("clear");
-        if(battle1=battle(rm,boki,user->floorcount[0],students)== 1)
+       while(rbattle <=30){
+       if(battle1=battle_boss(rm,boki,students)== 1)
         {
             gold_drop_boss(boki,students-1);
             town_movement(boki);
+            tp_movement(boki);
             drop_2teer20(boki);
             drop_3teer20(boki);
             boki->fhp*=1.20;
         monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
+        rbattle=rand()%100;
         }
-        else if(battle1 ==0)
+        if(boki->chp <= 0 || battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
             user->userPoint[1]=0;
             user->fcinterrupt[0]=-1;      
-            break;
+           rbattle=100;
         }
-    else    
-        break;
+    else if(battle1==3)
+       rbattle=100;
+    }
+    break;
     case baphomet:
         //바포메트와 전투
         system("clear");
@@ -1215,22 +1298,50 @@ case 5:
         {
             gold_drop_boss(boki,baphomet-1);
             drop_3teer20(boki);
+            tp_movement(boki);
             drop_4teer5(boki);
 
-        boki->fhp*=1.30;
-        monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
-        user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
+            boki->fhp*=1.30;
+            monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
+            user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
+            rbattle=rand()%100;
+            if(rbattle<=20){
+                if(battle1=battle_boss(rm,boki,students)== 1)
+                    {
+                        gold_drop_boss(boki,students-1);
+                        town_movement(boki);
+                        tp_movement(boki);
+                        drop_2teer20(boki);
+                        drop_3teer20(boki);
+                        boki->fhp*=1.20;
+                    monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
+                    user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
+                    break;
+                    }
+                if(boki->chp <= 0 ||battle1 ==0)
+                    {
+                        boki->chp=boki->fhp*0.1;
+                        user->floorcount[0]=0;
+                        user->userPoint[0]=0;
+                        user->userPoint[1]=0;
+                        user->fcinterrupt[0]=-1;      
+                    break;
+                    }
+                    }
+       
         }
-        else if(battle1 ==0)
-        {
-            boki->chp=boki->fhp*0.1;
-            user->floorcount[0]=0;
-            user->userPoint[0]=0;
-            user->userPoint[1]=0;
-            user->fcinterrupt[0]=-1;      
-              break;
-        }
+    if(boki->chp <= 0 ||battle1 ==0)
+    {
+        boki->chp=boki->fhp*0.1;
+        user->floorcount[0]=0;
+        user->userPoint[0]=0;
+        user->userPoint[1]=0;
+        user->fcinterrupt[0]=-1;      
+            break;
+    }
+        else if(battle1==3)
+            break;
+    break;
     case lee:
         //리얼보스와 전투
         system("clear");
@@ -1238,14 +1349,39 @@ case 5:
         {
             gold_drop_boss(boki,lee-1);
             drop_3teer20(boki);
+            tp_movement(boki);
             drop_4teer10(boki);
             elixir_drop(boki,rm,lee);
         boki->fhp*=1.60;
         monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
         user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
+        rbattle=rand()%100;
+        if(rbattle<=20){
+            if(battle1=battle_boss(rm,boki,students)== 1)
+                {
+                    gold_drop_boss(boki,students-1);
+                    town_movement(boki);
+                    tp_movement(boki);
+                    drop_2teer20(boki);
+                    drop_3teer20(boki);
+                    boki->fhp*=1.20;
+                monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
+                user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
+                break;
+                }
+            if(boki->chp <= 0 ||battle1 ==0)
+                {
+                    boki->chp=boki->fhp*0.1;
+                    user->floorcount[0]=0;
+                    user->userPoint[0]=0;
+                    user->userPoint[1]=0;
+                    user->fcinterrupt[0]=-1;      
+                break;
+                }
         }
-        else if(battle1 ==0)
+        
+        }
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
@@ -1254,8 +1390,9 @@ case 5:
             user->fcinterrupt[0]=-1;      
               break;
         }
-    else    
-        break;
+        else if(battle1==3)   
+            break;
+    break;
     case ryu:
         //찐막보스와 전투
         system("clear");
@@ -1263,24 +1400,49 @@ case 5:
         {
             gold_drop_boss(boki,ryu-1);
             drop_3teer30(boki);
+            tp_movement(boki);
             drop_4teer20(boki);
             elixir_drop(boki,rm,ryu);
-        boki->fhp*=2.00;
-        monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
-        user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
-        break;
+            boki->fhp*=2.00;
+            monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
+            user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
+            rbattle=rand()%100;
+                                            if(rbattle<=20){
+                                                if(battle1=battle_boss(rm,boki,students)== 1)
+                                                    {
+                                                        gold_drop_boss(boki,students-1);
+                                                        town_movement(boki);
+                                                        tp_movement(boki);
+                                                        drop_2teer20(boki);
+                                                        drop_3teer20(boki);
+                                                        boki->fhp*=1.20;
+                                                    monmap->fifthfloor.monstermaps[user->userPoint[0]][user->userPoint[1]]=empty;
+                                                    user->userInterFaceMap[user->userPoint[0]][user->userPoint[1]] =' ';
+                                                    break;
+                                                    }
+                                                if(boki->chp <= 0 ||battle1 ==0)
+                                                    {
+                                                        boki->chp=boki->fhp*0.1;
+                                                        user->floorcount[0]=0;
+                                                        user->userPoint[0]=0;
+                                                        user->userPoint[1]=0;
+                                                        user->fcinterrupt[0]=-1;      
+                                                    break;
+                                                    }
+                                                    }
         }
-        else if(battle1 ==0)
+        if(boki->chp <= 0 ||battle1 ==0)
         {
             boki->chp=boki->fhp*0.1;
             user->floorcount[0]=0;
             user->userPoint[0]=0;
             user->userPoint[1]=0;
             user->fcinterrupt[0]=-1;      
-              break;
-        }
-        else
             break;
+        }
+        else if(battle1==3)
+            break;
+    break;
     }
     break;
 default:
@@ -1392,8 +1554,10 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
             {
                     if(monmap->secondfloor.monstermaps[k][z]==empty)
                         user->userInterFaceMap[k][z]=' ';
-                    else
+                    else if((monmap->secondfloor.monstermaps[k][z]==nomal))
                         user->userInterFaceMap[k][z]='?';
+                    else if((monmap->secondfloor.monstermaps[k][z]==students))
+                         user->userInterFaceMap[k][z]='!';
             }
         }
         user->userInterFaceMap[49][49]='0';
@@ -1421,8 +1585,10 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
             {
             if(monmap->thirdfloor.monstermaps[k][z]==empty)
                 user->userInterFaceMap[k][z]=' ';
-            else
-                user->userInterFaceMap[k][z]='?';
+            else if((monmap->thirdfloor.monstermaps[k][z]==nomal))
+                        user->userInterFaceMap[k][z]='?';
+            else if((monmap->thirdfloor.monstermaps[k][z]==students))
+                    user->userInterFaceMap[k][z]='!';
             }
         }
         user->userInterFaceMap[49][49]='0';
@@ -1450,8 +1616,10 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
             {
                     if(monmap->fourthfloor.monstermaps[k][z]==empty)
                         user->userInterFaceMap[k][z]=' ';
-                    else
-                        user->userInterFaceMap[k][z]='?';
+                else if((monmap->fourthfloor.monstermaps[k][z]==nomal))
+                    user->userInterFaceMap[k][z]='?';
+                else if((monmap->fourthfloor.monstermaps[k][z]==students))
+                        user->userInterFaceMap[k][z]='!';
             }
         }
         user->userInterFaceMap[49][49]='0';
@@ -1464,15 +1632,19 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
             {
            
                 int mmr=rand()%100;
-                if(mmr>=70)
+                if(mmr<30)
                     copymap[i][j]=students;
-                else if(mmr>=30||mmr<=50)
+                
+                else if(mmr>=30&&mmr<=50)
                     copymap[i][j]=nomal;
-                else if(mmr>=51 || mmr<=60)
+                
+                else if(mmr>=51 && mmr<=60)
                     copymap[i][j]=baphomet;
-                else if(mmr>=61 || mmr<=65)
+                
+                else if(mmr>=61 && mmr<=75)
                     copymap[i][j]=lee;
-                else if (mmr>=66||mmr<=69)
+                
+                else if (mmr>=76&&mmr<=89)
                     copymap[i][j]=ryu;
                 else 
                     copymap[i][j]=empty;
@@ -1486,8 +1658,16 @@ maps* MonsterMapsRegenerative(maps* monmap,User* user)
         {
              if(monmap->fifthfloor.monstermaps[k][z]==empty)
                 user->userInterFaceMap[k][z]=' ';
-            else
-                user->userInterFaceMap[k][z]='?';
+            else if((monmap->fifthfloor.monstermaps[k][z]==nomal))
+                        user->userInterFaceMap[k][z]='?';
+            else if((monmap->fifthfloor.monstermaps[k][z]==students))
+                    user->userInterFaceMap[k][z]='!';
+            else if((monmap->fifthfloor.monstermaps[k][z]==baphomet))
+                        user->userInterFaceMap[k][z]='+';
+            else if((monmap->fifthfloor.monstermaps[k][z]==lee))
+                    user->userInterFaceMap[k][z]='%';
+            else if((monmap->fifthfloor.monstermaps[k][z]==ryu))
+                        user->userInterFaceMap[k][z]='~';
         }
     }
     break;
@@ -1528,7 +1708,7 @@ Monster* MonterRegenerative(Monster* rm,Boki* boki,User* user)
 {
     srand(time(NULL));
     char* name[28]={"강진영","권철민","김건","김민아","김성근",
-    "김승수","김경곤","김재신","김혜빈","노주영","박민건","박선후"
+    "김승수","김영곤","김재신","김혜빈","노주영","박민건","박선후"
     ,"박장미","박희정","서훈","안광민","오은지","유시온","이동준",
     "이준호","이은승","이준호","이철","임석현","조대정","조세빈",
     "황운하","황은비"};
@@ -1578,6 +1758,7 @@ Monster* MonterRegenerative(Monster* rm,Boki* boki,User* user)
     default:
         break;
     }
+return rm;
 }
 
 //무기 강화함수
@@ -1588,6 +1769,7 @@ void WReinForcement(Boki* boki,int count,int armed,int elixir)
     if(elixir == 1)
         aaaa=9;
     if(aaaa>=8){
+        printf("강화성공!\n");
         switch (armed)
         {
         case basicsword:          
@@ -1624,6 +1806,7 @@ void WReinForcement(Boki* boki,int count,int armed,int elixir)
     }
     else
     {
+        printf("저런...강화실패...\n");
         switch (armed)
         {
          case basicsword:          
@@ -1653,6 +1836,7 @@ void FDepReinForce(Boki* boki,int count,int armed,int elixir)
     if(elixir == 1)
         aaaa=9;
     if(aaaa>=8){
+        printf("강화성공!\n");
         switch (armed)
         {
         case armor:          
@@ -1697,6 +1881,7 @@ void FDepReinForce(Boki* boki,int count,int armed,int elixir)
     
     else
     {
+        printf("저런...강화실패...\n");
         switch (armed)
         {
          case armor:          
@@ -1728,6 +1913,7 @@ void SDepReinForce(Boki* boki,int count,int armed,int elixir)
     if(elixir == 1)
         aaaa=9;
     if(aaaa>=8){
+        printf("강화성공!\n");
         switch (armed)
         {
         case armor:          
@@ -1772,6 +1958,7 @@ void SDepReinForce(Boki* boki,int count,int armed,int elixir)
     
     else
     {
+        printf("저런...강화 실패..\n");
         switch (armed)
         {
          case armor:          
@@ -1803,6 +1990,7 @@ void TDepReinForce(Boki* boki,int count,int armed,int elixir)
     if(elixir == 1)
         aaaa=9;
     if(aaaa>=8){
+        printf("강화성공!\n");
         switch (armed)
         {
         case armor:          
@@ -1847,6 +2035,7 @@ void TDepReinForce(Boki* boki,int count,int armed,int elixir)
     
     else
     {
+        printf("저런...강화 실패...\n");
         switch (armed)
         {
          case armor:          
@@ -1878,6 +2067,7 @@ void FoDepReinForce(Boki* boki,int count,int armed,int elixir)
     if(elixir == 1)
         aaaa=9;
     if(aaaa>=8){
+        printf("강화성공!\n");
         switch (armed)
         {
         case armor:          
@@ -1922,6 +2112,7 @@ void FoDepReinForce(Boki* boki,int count,int armed,int elixir)
     
     else
     {
+        printf("저런...강화실패...\n");
         switch (armed)
         {
          case armor:          
@@ -1981,8 +2172,8 @@ void TownBack(Boki* boki, User* user)
 {
     user->floorcount[0] = 0;
     user->fcinterrupt[0] = -1;
-    user->userPoint[0] = 0;
-    user->userPoint[1] = 0;
+    user->userPoint[0] = 4;
+    user->userPoint[1] = 5;
 }
 
 Boki* BokiInitialization(Boki* boki)
@@ -2094,6 +2285,7 @@ void consume_window(Boki* boki,User* user)
         printf("장비강화주문서를 사용합니다.\n");
         boki->consume.scroll.ermagicscroll--;
         reinforce(boki);
+        equip(boki);
         printf("남은 장비강화주문서 %d개\n",boki->consume.scroll.ermagicscroll);
     }
     break;
@@ -2112,6 +2304,7 @@ void consume_window(Boki* boki,User* user)
         printf("엘릭서를 사용합니다.\n");
         boki->consume.elixir--;
         Ereinforce(boki);
+        equip(boki);
         printf("남은 엘릭서 %d개\n",boki->consume.elixir);
     }
     break;
@@ -2120,7 +2313,6 @@ void consume_window(Boki* boki,User* user)
     }
 
 }
-
 
 void TpsSave(User* user,Boki* boki)
 {
@@ -2215,10 +2407,11 @@ void Pandora(Boki* boki)
 {
     char a;
     int b;
+    int c;
     system("clear");
     printf("무엇을 구매하시겠습니까?\n");
     printf("1)빨간물약: 30골드\t 2)주황물약: 50골드\t 3)맑은물약: 100골드\t 4)고농도 물약:200골드\t \
-    5)마을 이동 주문서: 100골드\t");
+    5)마을 이동 주문서: 100골드\t 6)장비");
     a=getchar();
     
     b=atoi(&a);
@@ -2280,6 +2473,128 @@ void Pandora(Boki* boki)
         printf("돈이 없습니다.\n");
     }
         break;
+    case 6:
+     system("clear");
+    printf("무엇을 구매하시겠습니까?\n");
+    printf("1)기본갑빠: 30골드\t 2)기본장화: 30골드\t 3)기본망토: 30골드\t 4)기본장갑:30골드\t \
+    5)기본 마스크:30골드\t 6)기본검:30골드\t");
+    a=getchar();
+    c=atoi(&a);
+    switch (c)
+    {
+    case 1:
+    if(boki->gold>=30){
+        printf("기본갑빠 구매 완료!");
+        boki->gold-=30;
+        for (int i = 0; i < 5; i++)
+        {
+            if (boki->bokiEquipment.nomal.basicarmor[i][0] ==0){
+                 boki->bokiEquipment.nomal.basicarmor[i][0] =1;
+        break;
+        }
+        }
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }    
+        break;
+    case 2:
+    if(boki->gold>=30){
+        printf("기본장화 구매 완료!");
+        boki->gold-=30;
+        for (int i = 0; i < 5; i++)
+        {
+            if (boki->bokiEquipment.nomal.basicboots[i][0] ==0){
+                 boki->bokiEquipment.nomal.basicboots[i][0] =1;
+        break;
+        }
+        
+        }
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }    
+        break;
+    case 3:
+     if(boki->gold>=30){
+        printf("기본망토 구매 완료!");
+        boki->gold-=30;
+        for (int i = 0; i < 5; i++)
+        {
+            if (boki->bokiEquipment.nomal.basiccape[i][0] ==0){
+                 boki->bokiEquipment.nomal.basiccape[i][0] =1;
+        break;
+        }
+
+        }
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }    
+        break;
+    case 4:
+    if(boki->gold>=30){
+        printf("기본장갑 구매 완료!");
+        boki->gold-=30;
+        for (int i = 0; i < 5; i++)
+        {
+            if (boki->bokiEquipment.nomal.basicgloves[i][0] ==0){
+                 boki->bokiEquipment.nomal.basicgloves[i][0] =1;
+        break;
+        }
+
+        }
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }    
+    break;
+    case 5:
+    if(boki->gold>=30){
+        printf("기본마스크 구매 완료!");
+        boki->gold-=30;
+        for (int i = 0; i < 5; i++)
+        {
+            if (boki->bokiEquipment.nomal.basicmask[i][0] ==0){
+                 boki->bokiEquipment.nomal.basicmask[i][0] =1;
+        break;
+        }
+
+        }
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }    
+    break;
+    case 6:
+    if(boki->gold>=30){
+        printf("기본검 구매 완료!");
+        boki->gold-=30;
+        for (int i = 0; i < 5; i++)
+        {
+            if (boki->bokiEquipment.weapon.basicsword[i][0] ==0){
+                 boki->bokiEquipment.weapon.basicsword[i][0] =1;
+        break;
+        }
+
+        }
+    }
+    else
+    {
+        printf("돈이 없습니다.\n");
+    }    
+    break;
+    default:
+    printf("다른건 안팝니다.\n");
+    break;
+    }
+
+    break;
     default:
         printf("다른건 안팝니다.\n");
         break;
@@ -2341,13 +2656,10 @@ void Dwarf(Boki* boki)
 sleep(1);
 }
 
-
-
 int battle(Monster *monster, Boki *boki, int floor, int monstername) // 스위치 사용해서 몬스터네임이 1로 들어오면 1층애들만난다.  학생용사가 2, int battleboss
 { 
     while (1)
     {   
-        boki->chp;
         printf("1.전투\n2.물약사용\n3.도망 \n");
         int choice;
         char aaaa;
@@ -2403,7 +2715,7 @@ int battle(Monster *monster, Boki *boki, int floor, int monstername) // 스위�
                     else if (monster->zombie.hp > 0)
                         break;
             case 3: // 구울 전투
-                    monster->skeleton.hp -= boki->damage;
+                    monster->ghoul.hp -= boki->damage;
                     printf("구울 남은 hp %d\n", monster->ghoul.hp);
                     printf("boki %d체력\n", boki->chp);
                     boki->chp -= monster->ghoul.damage;
@@ -2558,10 +2870,11 @@ int battle(Monster *monster, Boki *boki, int floor, int monstername) // 스위�
             {
                 printf("%d 도망실패\n", random);
             }
-            break;
+            
         }
     }
 }    
+
 int battle_boss(Monster *monster, Boki *boki,int monstername)
 {
     while (1)
@@ -2586,7 +2899,7 @@ int battle_boss(Monster *monster, Boki *boki,int monstername)
         {
             case 2: 
                 monster->hero.hp-= boki->damage;
-                printf("몬스터 남은 hp %d\n", monster->hero.hp);
+                printf("%s 남은 hp %d\n",monster->hero.name,monster->hero.hp);
                 printf("boki %d체력\n", boki->chp);
                 boki->chp -= monster->hero.damage;
                 printf("boki 남은 hp %d\n", boki->chp);
@@ -2605,7 +2918,7 @@ int battle_boss(Monster *monster, Boki *boki,int monstername)
 
             case 3:
                 monster->Baphomet.hp -= boki->damage;
-                printf("몬스터 남은 hp %d\n", monster->Baphomet.hp);
+                printf("baphomet 남은 hp %d\n", monster->Baphomet.hp);
                 printf("boki %d체력\n", boki->chp);
                 boki->chp -= monster->Baphomet.damage;
                 printf("boki 남은 hp %d\n", boki->chp);
@@ -2623,7 +2936,7 @@ int battle_boss(Monster *monster, Boki *boki,int monstername)
                     break;
             case 4:
                 monster->boss.hp-=boki->damage;
-                printf("몬스터 남은 hp %d\n",monster->boss.hp);
+                printf("lee 남은 hp %d\n",monster->boss.hp);
                 printf("boki %d체력", boki->chp);
                 boki->chp -= monster->boss.damage;
                 printf("boki 남은 hp %d\n", boki->chp);
@@ -2641,7 +2954,7 @@ int battle_boss(Monster *monster, Boki *boki,int monstername)
                     break;
             case 5:
                 monster->realboss.hp-=boki->damage;
-                printf("몬스터 남은 hp %d\n",monster->realboss.hp);
+                printf("ryu 남은 hp %d\n",monster->realboss.hp);
                 printf("boki %d체력\n", boki->chp);
                 boki->chp -= monster->realboss.damage;
                 printf("boki 남은 hp %d\n", boki->chp);
@@ -2756,11 +3069,11 @@ int battle_boss(Monster *monster, Boki *boki,int monstername)
             {
                 printf("%d 도망실패\n", random);
             }
-            break;
+            
         }
+    
     }
 }    
-    
     
 void battle_boss_attack(Monster *monster, Boki *boki,  int monstername)
 {
@@ -2830,8 +3143,8 @@ int equip_sword(  Boki* boki){
       while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+        depend_choice=atoi(&aaaaaa); //문자숫자를 진짜 숫자로 바꿔줌 근대 숫자가아니면 0반환   
+        if(depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
         {
             break;
         }
@@ -2841,102 +3154,103 @@ int equip_sword(  Boki* boki){
     // boki->bokiEquipment.weapon.basicsword[0][0] = 1;// 테스트 때문에 방어구 한개 넣어서 확인해보기
     switch(depend_choice)
         {   
-            case 0 ://1티어 무기 장착하기
-       static int equip_choice;
+            case 1 ://1티어 무기 장착하기
+            static int equip_choice;
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.weapon.basicsword[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n 기본검 %d 번 장비의 공격력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.weapon.basicsword[i][1],boki->bokiEquipment.weapon.basicsword[i][2] );
+                printf("\n 기본검 %d 번 장비의 공격력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.weapon.basicsword[i][1],boki->bokiEquipment.weapon.basicsword[i][2] );
                 }
             }
             printf("번호를 입력하세요. \n");
         while (1)
         {
-        aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+        aaaaaa=getchar();  
+        equip_choice=atoi(&aaaaaa); //차 변수 주소로들어가서 *변수=> 1 실제 1이아니라 문자 1은 정수로 49임 그런대 이걸 함수가 그냥 정수 1로바꿔줌 
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.weapon.basicsword[equip_choice][0] != 0){ 
+            
+        if(boki->bokiEquipment.weapon.basicsword[equip_choice-1][0] != 0){ 
             printf("무기가있네요\n");// 무기가 있는지 확인
-            boki->damage = boki->bokiEquipment.weapon.basicsword[equip_choice][1]; //복이 공격력에 무기 공격력 입히기
+            boki->damage = boki->bokiEquipment.weapon.basicsword[equip_choice-1][1]; //복이 공격력에 무기 공격력 입히기
             printf("무기를 장착했습니다.\n");
             break;
             }else{
             printf("무기가 없습니다.\n");
             break;
             }
-            case 1 ://2티어 무기 장착하기
+            case 2 ://2티어 무기 장착하기 depend_choice 2
             // int equip_choice;
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.weapon.longsword[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n 장검 %d 번 장비의 공격력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.weapon.longsword[i][1],boki->bokiEquipment.weapon.longsword[i][2] );
+                printf("\n 장검 %d 번 장비의 공격력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.weapon.longsword[i][1],boki->bokiEquipment.weapon.longsword[i][2] );
                 }
             }
             printf("번호를 입력하세요. \n");
               while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             }  //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.weapon.longsword[equip_choice][0] != 0){ // 무기가 있는지 확인
-            boki->damage = boki->bokiEquipment.weapon.longsword[equip_choice][1]; //복이 공격력에 무기 공격력 입히기
+            if(boki->bokiEquipment.weapon.longsword[equip_choice-1][0] != 0){ // 무기가 있는지 확인
+            boki->damage = boki->bokiEquipment.weapon.longsword[equip_choice-1][1]; //복이 공격력에 무기 공격력 입히기
             printf("무기를 장착했습니다.\n");
             break;
             }else{
             printf("무기가 없습니다.\n");
             break;
             }
-            case 2 ://1티어 무기 장착하기
+            case 3 ://3티어 무기 장착하기
             // int equip_choice;
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.weapon.japensword[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n 일본도 %d 번 장비의 공격력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.weapon.japensword[i][1],boki->bokiEquipment.weapon.japensword[i][2] );
+                printf("\n 일본도 %d 번 장비의 공격력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.weapon.japensword[i][1],boki->bokiEquipment.weapon.japensword[i][2] );
                 }
             }
             printf("번호를 입력하세요. \n");
               while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.weapon.japensword[equip_choice][0] != 0){ // 무기가 있는지 확인
-            boki->damage = boki->bokiEquipment.weapon.japensword[equip_choice][1]; //복이 공격력에 무기 공격력 입히기
+            if(boki->bokiEquipment.weapon.japensword[equip_choice-1][0] != 0){ // 무기가 있는지 확인
+            boki->damage = boki->bokiEquipment.weapon.japensword[equip_choice-1][1]; //복이 공격력에 무기 공격력 입히기
             printf("무기를 장착했습니다.\n");
             break;
             }else{
             printf("무기가 없습니다.\n");
             break;
             }
-            case 3 ://1티어 무기 장착하기
+            case 4 ://1티어 무기 장착하기
             // int equip_choice;
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.weapon.nigthsword_saj[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n 싸울아비장검 %d 번 장비의 공격력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.weapon.nigthsword_saj[i][1],boki->bokiEquipment.weapon.nigthsword_saj[i][2] );
+                printf("\n 싸울아비장검 %d 번 장비의 공격력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.weapon.nigthsword_saj[i][1],boki->bokiEquipment.weapon.nigthsword_saj[i][2] );
                 }
             }
             printf("번호를 입력하세요. \n");
               while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.weapon.nigthsword_saj[equip_choice][0] != 0){ // 무기가 있는지 확인
-            boki->damage = boki->bokiEquipment.weapon.nigthsword_saj[equip_choice][1]; //복이 공격력에 무기 공격력 입히기
+            if(boki->bokiEquipment.weapon.nigthsword_saj[equip_choice-1][0] != 0){ // 무기가 있는지 확인
+            boki->damage = boki->bokiEquipment.weapon.nigthsword_saj[equip_choice-1][1]; //복이 공격력에 무기 공격력 입히기
             printf("무기를 장착했습니다.\n");
             break;
             }else{
@@ -2959,106 +3273,105 @@ int equip_mask( Boki* boki){
         {
         aaaaaa=getchar();
         depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        if(depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
         {
             break;
         }
         }
     switch(depend_choice)
         {    
-            case 0 ://1티어 마스크 장착하기
+            case 1 ://1티어 마스크 장착하기
          static  int equip_choice;
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.nomal.basicmask[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n기본마스크 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basicmask[i][1],boki->bokiEquipment.nomal.basicmask[i][2] );
+                printf("\n기본마스크 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.nomal.basicmask[i][1],boki->bokiEquipment.nomal.basicmask[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             }//5개중에 고르기 0~4번
-            if(boki->bokiEquipment.nomal.basicmask[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.nomal.basicmask[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.nomal.basicmask[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basicmask[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
-            printf("%d",boki->bokiEquipment.nomal.basicmask[equip_choice][1]);
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 1 ://1티어 갑바 장착하기
+            case 2 ://1티어 갑바 장착하기
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.rare.k80mask[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\nk80마스크%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.k80mask[i][1],boki->bokiEquipment.rare.k80mask[i][2] );
+                printf("\nk80마스크%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.rare.k80mask[i][1],boki->bokiEquipment.rare.k80mask[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.rare.k80mask[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.rare.k80mask[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.rare.k80mask[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.k80mask[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 2 ://1티어 망토 장착하기
+            case 3 ://1티어 망토 장착하기
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.epic.k94mask[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\nk94마스크 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.k94mask[i][1],boki->bokiEquipment.epic.k94mask[i][2] );
+                printf("\nk94마스크 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.epic.k94mask[i][1],boki->bokiEquipment.epic.k94mask[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             }//5개중에 고르기 0~4번
-            if(boki->bokiEquipment.epic.k94mask[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.epic.k94mask[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.epic.k94mask[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.k94mask[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 3 ://1티어 장갑 장착하기
+            case 4 ://1티어 장갑 장착하기
 
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.legend.tigermask[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n타이거마스크 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.tigermask[i][1],boki->bokiEquipment.legend.tigermask[i][2] );
+                printf("\n타이거마스크 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.legend.tigermask[i][1],boki->bokiEquipment.legend.tigermask[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             }//5개중에 고르기 0~4번
-            if(boki->bokiEquipment.legend.tigermask[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.legend.tigermask[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.legend.tigermask[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.tigermask[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             boki->bokiEquipment.legend.tigermask[equip_choice][0] = 0;
             printf("%d번 방어구를 장착했습니다.\n",equip_choice);
             break;
@@ -3080,108 +3393,108 @@ int equip_armor(  Boki* boki){
     while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        depend_choice=atoi(&aaaaaa);  //티어는 4개
+        if(depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
         {
             break;
         }
         }
     switch(depend_choice)
         {   
-            case 0 :// 장착하기
+            case 1 :// 티어는 4개
            static int equip_choice;
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.nomal.basicarmor[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n기본갑바%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basicarmor[i][1],boki->bokiEquipment.nomal.basicarmor[i][2] );
+                printf("\n기본갑바%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.nomal.basicarmor[i][1],boki->bokiEquipment.nomal.basicarmor[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.nomal.basicarmor[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.nomal.basicarmor[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.nomal.basicarmor[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basicarmor[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 1 ://1티어 갑바 장착하기
+            case 2 ://1티어 갑바 장착하기
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.rare.halfarmor[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n반팔갑옷 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.halfarmor[i][1],boki->bokiEquipment.rare.halfarmor[i][2] );
+                printf("\n반팔갑옷 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.rare.halfarmor[i][1],boki->bokiEquipment.rare.halfarmor[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             }//5개중에 고르기 0~4번
-            if(boki->bokiEquipment.rare.halfarmor[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.rare.halfarmor[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.rare.halfarmor[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.halfarmor[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 2 ://1티어 망토 장착하기
+            case 3 ://1티어 망토 장착하기
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.epic.hoodarmor[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n후드갑바 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.hoodarmor[i][1],boki->bokiEquipment.epic.hoodarmor[i][2] );
+                printf("\n후드갑바 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.epic.hoodarmor[i][1],boki->bokiEquipment.epic.hoodarmor[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.epic.hoodarmor[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.epic.hoodarmor[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.epic.hoodarmor[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.hoodarmor[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 3 :// 드래곤갑바
+            case 4 :// 드래곤갑바
             
             for(int i=0; i<5; i++){
             if(boki->bokiEquipment.legend.dragonarmor[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n드래곤갑바 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.dragonarmor[i][1],boki->bokiEquipment.legend.dragonarmor[i][2] );
+                printf("\n드래곤갑바 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.legend.dragonarmor[i][1],boki->bokiEquipment.legend.dragonarmor[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } // 5개중에 고르기 0~4번
-            if(boki->bokiEquipment.legend.dragonarmor[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.legend.dragonarmor[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.legend.dragonarmor[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.dragonarmor[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
@@ -3203,8 +3516,8 @@ int equip_cape(  Boki* boki){
     while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        depend_choice=atoi(&aaaaaa);  //티어는 4개
+        if(depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
         {
             break;
         }
@@ -3214,99 +3527,99 @@ int equip_cape(  Boki* boki){
         {   //이거이거 뭐지 이거이거 뭐니
         //1 티어 방어구를 한번에 착용하기 
         // 그렇게 하려면 어떻게 해야하지 선택을 하게해서 1티어리스트 뽑아주고 선택하게 하기 
-            case 0 ://마스크 장착하기
+            case 1 ://마스크 장착하기
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.nomal.basiccape[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n기본망토%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basiccape[i][1],boki->bokiEquipment.nomal.basiccape[i][2] );
+                printf("\n기본망토%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.nomal.basiccape[i][1],boki->bokiEquipment.nomal.basiccape[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.nomal.basiccape[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.nomal.basiccape[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.nomal.basiccape[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basiccape[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 1 :// 갑바 장착하기
+            case 2 :// 갑바 장착하기
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.rare.cottencape[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n천망토 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.cottencape[i][1],boki->bokiEquipment.rare.cottencape[i][2] );
+                printf("\n천망토 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.rare.cottencape[i][1],boki->bokiEquipment.rare.cottencape[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.rare.cottencape[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.rare.cottencape[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.rare.cottencape[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.cottencape[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 2 ://1티어 망토 장착하기
+            case 3 ://1티어 망토 장착하기
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.epic.silkcape[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n실크망토 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.silkcape[i][1],boki->bokiEquipment.epic.silkcape[i][2] );
+                printf("\n실크망토 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.epic.silkcape[i][1],boki->bokiEquipment.epic.silkcape[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.epic.silkcape[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.epic.silkcape[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.epic.silkcape[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.silkcape[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 3 :// 장갑 장착하기
+            case 4 :// 장갑 장착하기
             
             for(int i=0; i<5; i++){
             if(boki->bokiEquipment.legend.bulletcape[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n방탄망토%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.bulletcape[i][1],boki->bokiEquipment.legend.bulletcape[i][2] );
+                printf("\n방탄망토%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.legend.bulletcape[i][1],boki->bokiEquipment.legend.bulletcape[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
             {
             aaaaaa=getchar();
-            depend_choice=atoi(&aaaaaa);  
-            if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+            equip_choice=atoi(&aaaaaa);  
+            if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
             {
                 break;
             }
             } // 5개중에 고르기 0~4번
-            if(boki->bokiEquipment.legend.bulletcape[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.legend.bulletcape[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.legend.bulletcape[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.bulletcape[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
@@ -3323,13 +3636,13 @@ int equip_gloves(  Boki* boki){
   static  int depend_choice;
     //초기화
 
-    printf("4티어 방어구입니다.\n");
+
     // 4티어 방어구 장착하기    getchar(aaaaaa);
     while (1)
         {
-        aaaaaa=getchar();
+        aaaaaa=getchar(); //티어는 4개
         depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        if(depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
         {
             break;
         }
@@ -3338,10 +3651,10 @@ int equip_gloves(  Boki* boki){
         { 
         //4 티어 방어구를 한번에 착용하기 
         // 그렇게 하려면 어떻게 해야하지 선택을 하게해서 1티어리스트 뽑아주고 선택하게 하기 
-            case 0 ://4티어 마스크 장착하기
+            case 1 ://4티어 마스크 장착하기
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.nomal.basicgloves[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n기본장갑%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basicgloves[i][1],boki->bokiEquipment.nomal.basicgloves[i][2] );
+                printf("\n기본장갑%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.nomal.basicgloves[i][1],boki->bokiEquipment.nomal.basicgloves[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
@@ -3349,88 +3662,88 @@ int equip_gloves(  Boki* boki){
             while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        equip_choice=atoi(&aaaaaa);  
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         }//5개중에 고르기 0~4번
-            if(boki->bokiEquipment.nomal.basicgloves[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.nomal.basicgloves[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.nomal.basicgloves[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basicgloves[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 1 ://4티어 갑바 장착하기
+            case 2 ://4티어 갑바 장착하기
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.rare.rubbergloves[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n고무장갑 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.rubbergloves[i][1],boki->bokiEquipment.rare.rubbergloves[i][2] );
+                printf("\n고무장갑 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.rare.rubbergloves[i][1],boki->bokiEquipment.rare.rubbergloves[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
            while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        equip_choice=atoi(&aaaaaa);  
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         }//5개중에 고르기 0~4번
-            if(boki->bokiEquipment.rare.rubbergloves[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.rare.rubbergloves[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.rare.rubbergloves[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.rubbergloves[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 2 ://4티어 망토 장착하기
+            case 3 ://4티어 망토 장착하기
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.epic.cottengloves[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n천장갑 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.cottengloves[i][1],boki->bokiEquipment.epic.cottengloves[i][2] );
+                printf("\n천장갑 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.epic.cottengloves[i][1],boki->bokiEquipment.epic.cottengloves[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        equip_choice=atoi(&aaaaaa);  
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.epic.cottengloves[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.epic.cottengloves[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.epic.cottengloves[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.cottengloves[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 3 ://4티어 장갑 장착하기
+            case 4 ://4티어  장착하기
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.legend.leardergloves[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n가죽갑옷%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.leardergloves[i][1],boki->bokiEquipment.legend.leardergloves[i][2] );
+                printf("\n가죽갑옷%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.legend.leardergloves[i][1],boki->bokiEquipment.legend.leardergloves[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
            while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        equip_choice=atoi(&aaaaaa);  
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         }// 5개중에 고르기 0~4번
-            if(boki->bokiEquipment.legend.leardergloves[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.legend.leardergloves[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.legend.leardergloves[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.leardergloves[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
@@ -3453,7 +3766,7 @@ int equip_boots(  Boki* boki){// 부츠
         {
         aaaaaa=getchar();
         depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        if(depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
         {
             break;
         }
@@ -3462,98 +3775,100 @@ int equip_boots(  Boki* boki){// 부츠
         { 
         //4 티어 방어구를 한번에 착용하기 
         // 그렇게 하려면 어떻게 해야하지 선택을 하게해서 1티어리스트 뽑아주고 선택하게 하기 
-            case 0 ://4티어 마스크 장착하기
+            case 1 ://4티어 마스크 장착하기
            static int equip_choice;
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.nomal.basicboots[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n기본부츠%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.nomal.basicboots[i][1],boki->bokiEquipment.nomal.basicboots[i][2] );
+                printf("\n기본부츠%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.nomal.basicboots[i][1],boki->bokiEquipment.nomal.basicboots[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        equip_choice=atoi(&aaaaaa);  
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.nomal.basicboots[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.nomal.basicboots[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.nomal.basicboots[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.nomal.basicboots[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 1 ://4티어 갑바 장착하기
+            case 2 ://4티어 갑바 장착하기
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.rare.slipper[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n슬리퍼 %d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.rare.slipper[i][1],boki->bokiEquipment.rare.slipper[i][2] );
+                printf("\n슬리퍼 %d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.rare.slipper[i][1],boki->bokiEquipment.rare.slipper[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        equip_choice=atoi(&aaaaaa);  
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.rare.slipper[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.rare.slipper[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.rare.slipper[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.rare.slipper[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
-            case 2 ://4티어 망토 장착하기
+            case 3 ://4티어 망토 장착하기
             
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.epic.sneakers[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n스니커즈%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.epic.sneakers[i][1],boki->bokiEquipment.epic.sneakers[i][2] );
+                printf("\n스니커즈%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.epic.sneakers[i][1],boki->bokiEquipment.epic.sneakers[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        equip_choice=atoi(&aaaaaa);  
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         } //5개중에 고르기 0~4번
-            if(boki->bokiEquipment.epic.sneakers[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.epic.sneakers[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.epic.sneakers[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.epic.sneakers[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
             printf("방어구가 없습니다.\n");
             break;
             }
+            case 4 :
+
             for(int i=0; i<5; i++){ //아이템 정보출력
             if(boki->bokiEquipment.legend.airjodan[i][0] != 0){ //i번째 장비의 정보 출력
-                printf("\n조던%d 번 장비의 방어력%d : \n 강화수치 %d\n", i,boki->bokiEquipment.legend.airjodan[i][1],boki->bokiEquipment.legend.airjodan[i][2] );
+                printf("\n조던%d 번 장비의 방어력%f : \n 강화수치 %f\n", i+1,boki->bokiEquipment.legend.airjodan[i][1],boki->bokiEquipment.legend.airjodan[i][2] );
                 }
             }
             printf("방어구번호를 입력하세요. \n");
             while (1)
         {
         aaaaaa=getchar();
-        depend_choice=atoi(&aaaaaa);  
-        if(depend_choice==0||depend_choice==1||depend_choice==2||depend_choice==3||depend_choice==4)
+        equip_choice=atoi(&aaaaaa);  
+        if(equip_choice==1||equip_choice==2||equip_choice==3||equip_choice==4||equip_choice==5)
         {
             break;
         }
         }//타이거 마스크 5개중에 고르기 0~4번
-            if(boki->bokiEquipment.legend.airjodan[equip_choice][0] != 0){ // 방어구가 있는지 확인
-            boki->def += boki->bokiEquipment.legend.airjodan[equip_choice][1]; //복이 방어력에 방어구 방어력 입히기
+            if(boki->bokiEquipment.legend.airjodan[equip_choice-1][0] != 0){ // 방어구가 있는지 확인
+            boki->def += boki->bokiEquipment.legend.airjodan[equip_choice-1][1]; //복이 방어력에 방어구 방어력 입히기
             printf("방어구를 장착했습니다.\n");
             break;
             }else{
@@ -3571,31 +3886,31 @@ int equip(Boki* boki){
    
 
     printf("무기창입니다\n");
-    printf("0번기본검   1번 장검    2번 일본도     3번 싸울아비장검\n");
+    printf("1번기본검   2번 장검    3번 일본도     4번 싸울아비장검\n");
         boki->def = 0;
         boki->damage = 0;
         sum +=  equip_sword( boki);
 
     printf("마스크 장비창입니다.\n");
-    printf("0번 기본마스크      1번 k84마스크       2번k90마스크        3번타이거마스크     \n");
+    printf("1번 기본마스크      2번 k84마스크       3번k90마스크        4번타이거마스크     \n");
        sum +=  equip_mask(boki);
 
     printf("갑바 장비창입니다.\n");
-    printf("0번 기본갑바      1번 반팔갑바       2번 후드갑바        3번용갑바     \n");
+    printf("1번 기본갑바      2번 반팔갑바       3번 후드갑바        4번용갑바     \n");
 
        sum +=  equip_armor(boki);
 
     printf("망토 장비창입니다.\n");
-    printf("0번 기본망토      1번 면망토       2번 비단망토        3번 방탄망토     \n");
+    printf("1번 기본망토      2번 면망토       3번 비단망토        4번 방탄망토     \n");
 
         sum +=   equip_cape(boki);
 
     printf("장갑 장비창입니다.\n");
-    printf("0번 기본장갑      1번 고무장갑       2번 면장갑        3번 가죽장갑     \n");
+    printf("1번 기본장갑      2번 고무장갑       3번 면장갑        4번 가죽장갑     \n");
 
        sum +=  equip_gloves(boki);
     printf("부츠 장비창입니다.\n");
-    printf("0번 기본부츠      1번 슬리퍼       2번 스니커즈        3번 조던     \n");
+    printf("1번 기본부츠      2번 슬리퍼       3번 스니커즈        4번 조던     \n");
 
        sum +=  equip_boots(boki);
     

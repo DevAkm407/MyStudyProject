@@ -16,13 +16,16 @@ maps *m=MapsInitialization(m);
 m=MonsterMapsRegenerative(m,u);
 Monster* ster=MonsterInitialization(ster);
 Boki* boki=BokiInitialization(boki);
-boki->consume.elixir=1;
 while (1)
 {  
     u=UserMovement(u,m,ster,boki);  
     m=MonsterMapsRegenerative(m,u);
     u=ShowMap(u,m,boki,ster);
 }
+free(u);
+free(m);
+free(ster);
+free(boki);
 return 0; 
 }
 //몬스터 초기화 첫 실행시 사용

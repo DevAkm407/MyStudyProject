@@ -1,42 +1,42 @@
 
 typedef struct sword_table
 {
-    int basicsword[5][3];/*기본검*/
-    int longsword[5][3]; /*장검*/
-    int japensword[5][3]; /*일본도*/
-    int nigthsword_saj[5][3];/*싸울아비장검*/
+    double basicsword[5][3];/*기본검*/
+    double longsword[5][3]; /*장검*/
+    double japensword[5][3]; /*일본도*/
+    double nigthsword_saj[5][3];/*싸울아비장검*/
 }sword_table;
 typedef struct first_depend_table
 {
-    int basicarmor[5][3];/*기본 갑빠*/
-    int basicboots[5][3];/*기본 장화*/
-    int basiccape[5][3];/*기본 망토*/
-    int basicgloves[5][3];/*기본 장갑*/
-    int basicmask[5][3];/*기본 마스크*/
+    double basicarmor[5][3];/*기본 갑빠*/
+    double basicboots[5][3];/*기본 장화*/
+    double basiccape[5][3];/*기본 망토*/
+    double basicgloves[5][3];/*기본 장갑*/
+    double basicmask[5][3];/*기본 마스크*/
 }first_depend_table;
 typedef struct second_depend_table
 {
-    int halfarmor[5][3];/*반팔 갑빠*/
-    int slipper[5][3];/*슬리퍼*/
-    int rubbergloves[5][3];/*고무장갑*/
-    int cottencape[5][3];/*면 망토*/
-    int k80mask[5][3];/*k80 마스크*/
+    double halfarmor[5][3];/*반팔 갑빠*/
+    double slipper[5][3];/*슬리퍼*/
+    double rubbergloves[5][3];/*고무장갑*/
+    double cottencape[5][3];/*면 망토*/
+    double k80mask[5][3];/*k80 마스크*/
 }second_depend_table;
 typedef struct third_depend_table
 {
-    int hoodarmor[5][3];/*후드갑빠*/
-    int sneakers[5][3];/*운동화*/
-    int cottengloves[5][3];/*면 장갑*/
-    int silkcape[5][3];/*비단 망토*/
-    int k94mask[5][3];/*k94마스크*/
+    double hoodarmor[5][3];/*후드갑빠*/
+    double sneakers[5][3];/*운동화*/
+    double cottengloves[5][3];/*면 장갑*/
+    double silkcape[5][3];/*비단 망토*/
+    double k94mask[5][3];/*k94마스크*/
 }third_depend_table;
 typedef struct fourth_depend_table
 {
-    int dragonarmor[5][3];/*용 갑빠*/
-    int airjodan[5][3];/*에어조단*/
-    int leardergloves[5][3];/*가죽장갑*/
-    int bulletcape[5][3];/*방탄 망토*/
-    int tigermask[5][3];/*타이거 마스크*/
+    double dragonarmor[5][3];/*용 갑빠*/
+    double airjodan[5][3];/*에어조단*/
+    double leardergloves[5][3];/*가죽장갑*/
+    double bulletcape[5][3];/*방탄 망토*/
+    double tigermask[5][3];/*타이거 마스크*/
 }fourth_depend_table;
 
 typedef struct potion_table
@@ -83,8 +83,8 @@ typedef struct Boki
     int fhp;
     int chp;
     int gold;
-    int damage;
-    int def;
+    double damage;
+    double def;
     coordinate tpCoordinate[7];
     equipment bokiEquipment;
     item_table consume;
