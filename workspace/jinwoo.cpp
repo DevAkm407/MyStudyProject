@@ -9,14 +9,24 @@ std::cout << "이름을 입력해주세요: ";
 getline(std::cin,name);
 level=1;
 expBar=30000;
-exp=0;  
+exp=0;
+deathcount=0;
+easycount=0;
 }
 jinwoo::jinwoo(const std::string myname,int mylevel,int myexpBar)
 {
     name=myname;
     level=mylevel;
     this->expBar=myexpBar;
+    deathcount=0;
+    easycount=0;
 }
+jinwoo::jinwoo(const jinwoo & copy)
+:level(10),expBar(30000),exp(0),deathcount(copy.deathcount),easycount(copy.easycount)
+{
+    name=std::string(copy.name);
+}
+
 jinwoo::~jinwoo()
 {
 }
@@ -35,6 +45,20 @@ int jinwoo::callrandom(int count)
     
     return -1; 
 }
+int jinwoo::callrandom(int count,int easy)
+{
+    using namespace std;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> rexp(0,3500); //정수 균등분포 -3500에서 3500이 뽑힐 확률이 균등하다
+    if (count ==0 && easy==0)
+    {
+        int rep=rexp(gen);
+        return rep;
+    }
+    
+    return -1; 
+}
 double jinwoo::callrandom(double count)
 {
     using namespace std;
@@ -44,12 +68,12 @@ double jinwoo::callrandom(double count)
     uniform_real_distribution<double> ebmul(1.8,2.5);//실수 균등 분포 1.8~2.5이 뽑힐확률이 균등하다
     if (count ==1.0)
     {
-        int mul=mulexp(gen);
+        double mul=mulexp(gen);
         return mul;
     }
      if (count ==2.0)
     {
-        int ebb=ebmul(gen);
+        double ebb=ebmul(gen);
         return ebb;
     }
     return -1; 
@@ -70,12 +94,21 @@ void jinwoo::fight()
         std::cout << "랜덤 뽑기 매개변수 지정오류"<<std::endl;
         exit(-1);
     }
-    std::cout <<"한턴의 "<<i<<"번째 입니다."<<std::endl;
+    if(this->deathcount >= 1)
+    {
+        jinwoo::easymode();
+        deathcount--;
+        break;
+    }
+    if(this->easycount>=1)
+        getExp=jinwoo::callrandom(0,0);
+    std::cout <<"한턴의 "<<i+1<<"번째 입니다."<<std::endl;
     std::cout << "경험치를 획득하셨습니다: " <<getExp<<std::endl;
     std::cout << "경험치 배율은: "<<bonus<<" 입니다.\n";
     this->exp+=getExp*bonus;
     jinwoo::levelUp();
     jinwoo::levleDown();
+    
     }
 
 }
@@ -104,7 +137,7 @@ void jinwoo::levleDown()
         this->level--;
         if(level<=0){
             std::cout<<"사망 하셨습니다.\n";
-            exit(0);
+            deathcount++;
         }
         std::cout <<"레벨이 낮아졌습니다... 현재 레벨: "<<this->level<<std::endl;
     }
@@ -114,6 +147,7 @@ void jinwoo::query()
 {
     using namespace std;
     string answer;
+    cout<<"현재 레벨: "<< this->level <<"현재 경험치: "<< this->exp <<"현재 경험치통: "<<this->expBar<<endl;
     while(true)
     {
         cout <<"턴을 진행하시겠습니까? yes or no: ";
@@ -132,5 +166,34 @@ void jinwoo::query()
         else
             cout << "긍정은 yes, y , Y 부정은 no, n, n 를 입력해주세요"<<endl;
     }
+}
 
+void  jinwoo::easymode()
+{
+    using namespace std;
+    string answer;
+    while(true)
+    {
+        cout << "이지 모드로 하시겠습니까?";
+        getline(cin,answer);
+        if(answer.compare("yes")== 0||answer.compare("y")==0||answer.compare("Y")==0)
+            {
+                cout <<"이지모드로 진행합니다.\n";
+                easycount++;
+                break;
+            }
+        else if(answer.compare("no")== 0||answer.compare("n")==0||answer.compare("N")==0)
+        {
+            cout<<"현재 레벨: "<< this->level <<"현재 경험치: "<< this->exp <<"현재 경험치통: "<<this->expBar<<endl;
+            cout<<"게임 종료\n";
+            exit(0);
+        }
+        else
+            cout << "긍정은 yes, y , Y 부정은 no, n, n 를 입력해주세요"<<endl;
+    }
+}
+
+int jinwoo:: easycountreturn()
+{
+    return easycount;
 }
