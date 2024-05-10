@@ -44,7 +44,7 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
             ],
             "group": "build",
             "problemMatcher": {
@@ -70,13 +70,17 @@
         {
             "type": "cppbuild",
             "label": "C/C++: gcc 활성 파일 빌드",
-            "command": "/usr/bin/gcc",
+            "command": "/usr/bin/g++",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-I/usr/include/mariadb",
+                "-I/usr/include/maridb/mysql",
+                "-L/usr/lib/x86_64-linux-gun/",
+                "-lmariadbcpp"
             ],
             "options": {
                 "cwd": "${fileDirname}"
