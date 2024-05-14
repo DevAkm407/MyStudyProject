@@ -1,29 +1,31 @@
 #include <iostream>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <string>
 #include <signal.h>
-#include <sys/wait.h>
+#include <sstream>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <pthread.h>
+#include "lsclass.hpp"
 #define BUF_SZIE 100
 #define MAX_CLNT 256
 using namespace std;
 void * handle_clnt(void* arg);
 void send_msg(char * msg, int len);
 void error_handling(string message);
+int Rhandle(int checkf,char msg[BUF_SZIE]);
 int clnt_cnt=0;
 int clnt_socks[MAX_CLNT];
 pthread_mutex_t mutx;
+
 
 int main(int argc,char *argv[])
 {
     int serv_sock,clnt_sock;
     sockaddr_in serv_adr,clnt_adr;
     socklen_t clnt_adr_sz;
-    pthread_t t_id;
+    pthread_t t_id,ban_id;
     if(argc!=2)
     {
         cout<<"Usage : "<<argv[0] <<" <prot>\n";
@@ -45,27 +47,39 @@ int main(int argc,char *argv[])
     {
         clnt_adr_sz=sizeof(clnt_adr);
         clnt_sock=accept(serv_sock,(sockaddr*)&clnt_adr,&clnt_adr_sz);
-
-        pthread_mutex_lock(&mutx);//handle_cnt에서 순서를 정렬할때 새로들어오는것을 막아주기위해 lock 함
+        puts("Connected client IP: " );
+        puts(inet_ntoa(clnt_adr.sin_addr));
+        // cout<<"Connected client IP: ";//inet_ntoa(clnt_adr.sin_addr);
+        pthread_mutex_lock(&mutx);
         clnt_socks[clnt_cnt++]=clnt_sock;
         pthread_mutex_unlock(&mutx);
 
-        pthread_create(&t_id,NULL,handle_clnt,(void*)&clnt_sock);//쓰레드 id하나로 클라이언트 수만큼 쓰래드를 생성해주는 부분 클라이언트는 1개의 전용 쓰래드를 할당받음 
-        pthread_detach(t_id);//할당한 쓰래드를 프로세스 종료와 함께 종료시키거나 클라이언트가 종료하면 자동으로 쓰레드가 종료되게 때어냄
-        cout<<"Connected client IP: "<<inet_ntoa(clnt_adr.sin_addr);
+        pthread_create(&t_id,NULL,handle_clnt,(void*)&clnt_sock);
+        pthread_detach(t_id);
+       
     }
+    
     close(serv_sock);
     return 0;
 }
 
+
+
 void* handle_clnt(void* arg)
 {
+    
     int clnt_sock=*((int*)arg);
     int str_len=0,i;
     char msg[BUF_SZIE];
-
+  
+    
     while ((str_len=read(clnt_sock,msg,sizeof(msg)))!=0)
-        send_msg(msg,str_len);
+    {  
+        Rhandle(atoi(&msg[0]),msg);
+        send_msg(msg,BUF_SZIE);
+    }
+            
+    // send_msg(msg,str_len);
     pthread_mutex_lock(&mutx);//만약 다른 클라이언트가 비슷한 시기에 접속을 종료했다면 밑에 for문이 돌기전에 진입하게된다.그렇게되면 소켓번호를
     for ( i = 0; i <clnt_cnt ; i++)//재정렬하는 과정에서 하나가 또 지워지거나 정렬하고 있는거 또 정렬해서 순번이 꼬이는 사건이 발생할 수 있다. 그 사건을 막기위한 lock
     {
@@ -81,6 +95,9 @@ void* handle_clnt(void* arg)
     close(clnt_sock);
     return NULL;
 }
+
+
+
 
 void send_msg(char * msg, int len)
 {
@@ -98,8 +115,65 @@ void send_msg(char * msg, int len)
     pthread_mutex_unlock(&mutx);//모든 메시지를 사용자에게 보내고 나서 언락을 풀어준다.
 }
 
+
+
 void error_handling(string message)
 {
     cerr<<message<<endl;
     exit(1);
 }
+
+
+
+int Rhandle(int checkf,char msg[BUF_SZIE])
+{
+    string copymsg=msg;
+    string mail;
+    lsclass clnt;
+    switch (checkf)
+    {
+    case 1:
+        
+        /*함수(atoi(&hand1),a[2])*/    
+        break;
+    
+    case 2:
+       mail = clnt.sign_up(copymsg);
+       memset(msg,0,BUF_SZIE);
+       mail.copy(msg,mail.length()); 
+    //    send_msg(msg,mail.length());      
+    /*함수(parameter[1],parameter[2])*/
+        break;
+    
+    case 3:
+        
+        
+        /*함수(parameter[1],parameter[2])*/
+        break;
+    
+    case 4:
+        
+        /*함수(parameter[1])*/
+        break;
+    
+    case 5:
+        
+        /*함수(parameter[1])*/
+        break;
+    
+    case 6:
+        
+        /*함수(parameter[1])*/
+        break;                
+    
+    default:
+        memset(msg,0,BUF_SZIE);
+        char fail[20]="프로토콜 위반" ;
+        msg=fail;
+        send_msg(msg,BUF_SZIE);
+        return -1;
+        break;
+    }
+    return 0; 
+}
+

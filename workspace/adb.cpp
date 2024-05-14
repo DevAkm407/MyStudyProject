@@ -65,6 +65,7 @@ int spiltmax(int max,int* array,int size)
  return 0;
 }
 
+
 std::unique_ptr<sql::Connection> setting()
 {
         // DB연결 객체 생성
@@ -73,11 +74,47 @@ std::unique_ptr<sql::Connection> setting()
         sql::SQLString url("jdbc:mariadb://localhost:3306/ADB");
         // 연결할 DB를 사용할 유저를 정의
         sql::Properties properties({{"user", "AKM"}, {"password", "1234"}});
+        
         // 객체에 값을 통하여 연결을 시도
         std::unique_ptr<sql::Connection> conn(driver->connect(url, properties));
     return conn;    
 }
-std::unique_ptr<sql::Connection> conn=setting();    
+
+
+std::unique_ptr<sql::Connection> conn=setting();
+void goHistory(int shitory)
+{
+     
+        switch (shitory)
+        {
+        case 1:
+            showRegion();        
+            break;
+        case 2:
+            showGBCCF_Region();
+            break;
+        case 3:
+            showAgeSex();
+            break;
+        case 4:
+            showGBCCFAgeSex();
+            break;
+        case 5:
+            showGraphAgeSex();
+            break;
+        case 6:
+            showPlace();
+            break;
+        case 7:
+            showGBCCF_Place();
+            break;
+        default:
+            break;
+        }
+  
+}
+
+
 public:
     adb(/* args */):historycount(1)
     {}
@@ -306,7 +343,7 @@ void showGraphAgeSex() {
         {
             ss>>cln[i];
         }
-        std::string ccf[15];
+        std::string ccf[15]; 
         std::vector<int> a[8];
         sql::ResultSet *res;
         int count=0;
@@ -328,6 +365,7 @@ void showGraphAgeSex() {
         int max=0;
         std::string stop;
         
+
         while(--count)
         {
             int* z = new int[8];
@@ -698,39 +736,33 @@ void showHistory()
             a="장소별 범죄기록(범죄대분류기준)";
             break;
         default:
+            a.clear();
             break;
         }
-        std::cout<<iter->first<<"번째 열람기록: "<<a;
+        std::cout<<iter->first<<"번째 열람기록: "<<a<<std::endl;
     }
-}
-
-void goHistory(int shitory)
-{
-    switch (shitory)
+    char* b =new char[20];
+    std::string ss;
+    std::cout<<"다시 열람하고싶은 자료가있습니까? y or n"<<std::endl;
+    getline(std::cin,ss);
+    if(ss=="y" || ss=="Y")
     {
-    case 1:
-        showRegion();        
-        break;
-    case 2:
-        showGBCCF_Region();
-        break;
-    case 3:
-        showAgeSex();
-        break;
-    case 4:
-        showGBCCFAgeSex();
-        break;
-    case 5:
-        showGraphAgeSex();
-        break;
-    case 6:
-        showPlace();
-        break;
-    case 7:
-        showGBCCF_Place();
-        break;
-    default:
-        break;
+        
+        std::cout<<"몇번자료를 열람하고 싶으십니까? 입력해주세요: ";
+        std::cin.getline(b,20);
+        while(atoi(b)==0)
+            std::cin.getline(b,20);
+        std::map<int,int>::iterator ater;
+        ater=history.find(atoi(b));
+        if(history.count(atoi(b))==0){
+            std::cout<<"조회번호를 잘못입력 하셨습니다.\n";
+        }
+        
+        else
+        {   
+        goHistory(ater->second);
+        }
+        delete b;
     }
 }
 
@@ -743,19 +775,51 @@ void goHistory(int shitory)
 int main() {
    
         adb a;
-        // a.showAgeSex();
-        // a.showGBCCF_Region();
-        // a.showGBCCF_Place();
-        // a.showRegion();
-        // a.showHistory();
-        int c;
-        std::cout << "\n";
-        std::cin >> c;
-        a.goHistory(2);
-
+        char* k=new char[20];
+        while (1)
+        {
+            char m;
+            std::cout<<"원하는 기능을 선택해주세요\n\n"<<"1.지역별 범죄 조회 2.지역별 범죄 통계 3.나이및성별 범죄 조회 4.나이및성별 범죄통계 조회 5.나이및 성별 범죄 그래프 조회 6.장소별 범죄 조회 "
+            <<"7.장소별 범죄통계조회 8.히스토리 조회 9.종료"<<std::endl<<"입력:";
+            std::cin.getline(k,20);   
+            std::cout<<"\n";
+            switch (atoi(k))
+            {
+            case 1:
+                a.showRegion();
+                break;
+            case 2:
+                a.showGBCCF_Region();
+                break;
+            case 3:
+                a.showAgeSex();
+                break;
+            case 4:
+                a.showGBCCFAgeSex();
+                break;
+            case 5:
+                a.showGraphAgeSex();
+                break;
+            case 6:
+                a.showPlace();
+                break;
+            case 7:
+                a.showGBCCF_Place();
+                break;
+            case 8:
+                a.showHistory();
+                break;                
+            case 9:
+                delete k;
+                return 0;
+                break;
+            default:
+                std::cout<<"다시입력해주세요\n";
+                break;
+            }
+        }
         
-        // 연결 실패시 오류 발생    
+
     
-   
     return 0;
 }

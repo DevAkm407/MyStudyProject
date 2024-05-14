@@ -4,6 +4,7 @@
 // #include<pthread.h>
 // void* thread_main(void *arg);
 
+
 // int main()
 // {
 //     pthread_t t_id;
@@ -19,6 +20,7 @@
 //     return 0;
 // }
 
+
 // void* thread_main(void *arg)
 // {
 //     int i;
@@ -31,6 +33,7 @@
 //     return NULL;
 // }
 
+
 // #include<iostream>
 // #include<unistd.h>
 // #include<stdio.h>
@@ -38,6 +41,7 @@
 // #include<string.h>
 // using namespace std;
 // void* thread_main(void *arg);
+
 
 // int main(int argc,char * argv[])
 // {
@@ -61,6 +65,7 @@
     
 //     return 0;
 // }   
+
 
 // void* thread_main(void *arg)
 // {
@@ -277,5 +282,55 @@
 //     cout<<"Result: "<<sum<<endl;
 
 //     return NULL;
+
+// }
+
+
+// #include <stdio.h>
+// #include <pthread.h>
+// #include <semaphore.h>
+// #include <iostream>
+
+// void * read(void * arg);
+// void  accu();
+// static sem_t sem_one;
+// static sem_t sem_two;
+// static int num;
+// using namespace std;
+// int main()
+// {
+//     pthread_t id_t1,id_t2;
+   
+
+//     pthread_create(&id_t1,NULL,read,NULL);
+   
+//     pthread_join(id_t1,NULL);
+   
+    
+//     return 0;
+// }
+
+// void* read(void* arg)
+// {
+//     int i;
+//     for ( i = 0; i < 5; i++)
+//     {
+//         cout<<"Input num: \n";
+        
+//         std::cin>>num;
+//     }
+//     accu();
+//     return NULL;
+// }
+
+// void accu()
+// {
+//     int sum=0,i;
+//     for ( i = 0; i < 5; i++)
+//     {
+        
+//         sum+=num;
+//             }
+//     cout<<"Result: "<<sum<<endl;
 
 // }

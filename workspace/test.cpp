@@ -1,14 +1,8 @@
 #include <iostream>
-#include <fstream>
 #include <string>
-
+using namespace std;
 int main()
 {
-using namespace std;
-ofstream outfile;
-
-outfile.open("scores.txt");
-outfile << 1;
-outfile.close();
-return 0;
+    
+     
 }

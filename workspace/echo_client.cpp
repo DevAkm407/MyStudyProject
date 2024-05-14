@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
             break;
         write(sock,message,strlen(message));
         str_len=read(sock,message,BUF_SZIE-1);
-        message[str_len]=0;
+        message[str_len-1]=0;
         cout<<"Message from server: "<<message;
     }
     close(sock);
