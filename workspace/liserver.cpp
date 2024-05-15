@@ -12,13 +12,12 @@
 #define MAX_CLNT 256
 using namespace std;
 void * handle_clnt(void* arg);
-void send_msg(char * msg, int len);
+void send_msg(char * msg, int len,int clntsock);
 void error_handling(string message);
-int Rhandle(int checkf,char msg[BUF_SZIE]);
+int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt);
 int clnt_cnt=0;
 int clnt_socks[MAX_CLNT];
 pthread_mutex_t mutx;
-
 
 int main(int argc,char *argv[])
 {
@@ -70,13 +69,16 @@ void* handle_clnt(void* arg)
     
     int clnt_sock=*((int*)arg);
     int str_len=0,i;
+    int login=0;
     char msg[BUF_SZIE];
-  
+    lsclass clnt;
     
     while ((str_len=read(clnt_sock,msg,sizeof(msg)))!=0)
     {  
-        Rhandle(atoi(&msg[0]),msg);
-        send_msg(msg,BUF_SZIE);
+        cout<<clnt_sock<<": "<<msg<<endl;
+        login=Rhandle(atoi(&msg[0]),msg,&clnt);
+        send_msg(msg,BUF_SZIE,clnt_sock);
+        memset(msg,0,BUF_SZIE);
     }
             
     // send_msg(msg,str_len);
@@ -98,21 +100,21 @@ void* handle_clnt(void* arg)
 
 
 
-
-void send_msg(char * msg, int len)
+void send_msg(char * msg, int len,int clntsock)
 {
 
     int i;
-    pthread_mutex_lock(&mutx);//모든 클라이언트들에게 메시지를 뿌리기전에  다시 for문을 돈다고 가정하면 다른 스레드가 i에 접근하게 되면서 i를
-    //다시 0으로 만들어버리는 사태가 발생할 수 있고 메시지는 모든 클라이언트들에게 전달되지 못하고 후자로 들어온 메시지만 모두에게 전달될 가능성이 있다.
     
-    for(i=0; i<clnt_cnt; i++)
-    {
+    // pthread_mutex_lock(&mutx);//모든 클라이언트들에게 메시지를 뿌리기전에  다시 for문을 돈다고 가정하면 다른 스레드가 i에 접근하게 되면서 i를
+    //다시 0으로 만들어버리는 사태가 발생할 수 있고 메시지는 모든 클라이언트들에게 전달되지 못하고 후자로 들어온 메시지만 모두에게 전달될 가능성이 있다. 
+    // for(i=0; i<clnt_cnt; i++)
+    // {
 
-        write(clnt_socks[i],msg,len);
+        write(clntsock,msg,len);
 
-    }
-    pthread_mutex_unlock(&mutx);//모든 메시지를 사용자에게 보내고 나서 언락을 풀어준다.
+    // }
+    // pthread_mutex_unlock(&mutx);//모든 메시지를 사용자에게 보내고 나서 언락을 풀어준다.
+
 }
 
 
@@ -124,40 +126,55 @@ void error_handling(string message)
 }
 
 
-
-int Rhandle(int checkf,char msg[BUF_SZIE])
+int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
 {
+    // pthread_mutex_lock(&mutx);
     string copymsg=msg;
-    string mail;
-    lsclass clnt;
+    string mail; 
     switch (checkf)
     {
     case 1:
+        
         
         /*함수(atoi(&hand1),a[2])*/    
         break;
     
     case 2:
-       mail = clnt.sign_up(copymsg);
+       mail = clnt->sign_up(copymsg);
+    
        memset(msg,0,BUF_SZIE);
+    
        mail.copy(msg,mail.length()); 
     //    send_msg(msg,mail.length());      
     /*함수(parameter[1],parameter[2])*/
         break;
     
     case 3:
-        
-        
+    
+        mail=clnt->loginService(msg);
+
+        memset(msg,0,BUF_SZIE);
+
+        mail.copy(msg,mail.length());
+
         /*함수(parameter[1],parameter[2])*/
         break;
     
     case 4:
-        
+        mail = clnt->rental(copymsg);
+
+        memset(msg,0,BUF_SZIE);
+
+        mail.copy(msg,mail.length());
         /*함수(parameter[1])*/
         break;
     
     case 5:
-        
+        mail = clnt->giveBack(copymsg);
+
+        memset(msg,0,BUF_SZIE);
+
+        mail.copy(msg,mail.length());
         /*함수(parameter[1])*/
         break;
     
@@ -168,12 +185,10 @@ int Rhandle(int checkf,char msg[BUF_SZIE])
     
     default:
         memset(msg,0,BUF_SZIE);
-        char fail[20]="프로토콜 위반" ;
-        msg=fail;
-        send_msg(msg,BUF_SZIE);
-        return -1;
+        string  ph="프로토콜 위반" ;
+        ph.copy(msg,ph.length());
         break;
     }
+    // pthread_mutex_unlock(&mutx);
     return 0; 
 }
-
