@@ -17,11 +17,13 @@ void error_handling(string message);
 int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt);
 int clnt_cnt=0;
 int clnt_socks[MAX_CLNT];
+void* chekingclnt(void* arg);
 pthread_mutex_t mutx;
 
 int main(int argc,char *argv[])
 {
     int serv_sock,clnt_sock;
+    int xxs;
     sockaddr_in serv_adr,clnt_adr;
     socklen_t clnt_adr_sz;
     pthread_t t_id,ban_id;
@@ -42,6 +44,9 @@ int main(int argc,char *argv[])
         error_handling("bind() error");
     if(listen(serv_sock,5)==-1)
         error_handling("listen() error");
+    
+    // pthread_create(&ban_id,NULL,chekingclnt,(void*)&xxs);
+    // pthread_detach(ban_id);
     while (1)
     {
         clnt_adr_sz=sizeof(clnt_adr);
@@ -133,23 +138,24 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
     string mail; 
     switch (checkf)
     {
+    
     case 1:
         
         
         /*함수(atoi(&hand1),a[2])*/    
         break;
     
-    case 2:
+    case 2: //회원가입
        mail = clnt->sign_up(copymsg);
     
        memset(msg,0,BUF_SZIE);
     
        mail.copy(msg,mail.length()); 
-    //    send_msg(msg,mail.length());      
-    /*함수(parameter[1],parameter[2])*/
+        //    send_msg(msg,mail.length());      
+        /*함수(parameter[1],parameter[2])*/
         break;
     
-    case 3:
+    case 3: //로그인
     
         mail=clnt->loginService(msg);
 
@@ -160,25 +166,26 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
         /*함수(parameter[1],parameter[2])*/
         break;
     
-    case 4:
+    case 4: //대여서비스
         mail = clnt->rental(copymsg);
 
         memset(msg,0,BUF_SZIE);
 
         mail.copy(msg,mail.length());
+
         /*함수(parameter[1])*/
         break;
     
-    case 5:
+    case 5: //반납
         mail = clnt->giveBack(copymsg);
 
         memset(msg,0,BUF_SZIE);
-
+            
         mail.copy(msg,mail.length());
         /*함수(parameter[1])*/
         break;
     
-    case 6:
+    case 6: //회원탈퇴
         
         /*함수(parameter[1])*/
         break;                
@@ -189,6 +196,14 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
         ph.copy(msg,ph.length());
         break;
     }
+
     // pthread_mutex_unlock(&mutx);
     return 0; 
 }
+
+ 
+// void* chekingclnt(void* arg)
+// {
+//     lsclass* c=new lsclass;
+//     c->dateCheck();
+// }
