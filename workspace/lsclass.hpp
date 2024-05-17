@@ -37,6 +37,8 @@ public:
     ~lsclass()
     {}
 
+
+//회원가입함수
     std::string sign_up(std::string msg)
     {
         try{
@@ -76,8 +78,8 @@ public:
         }
         return 0;
     }
-    
-    
+
+
     std::string loginService(std::string msg) //loginService
     { try{
         istringstream iss(msg);
@@ -119,6 +121,7 @@ public:
         return 0;
     }
 
+//대여함수
     std::string rental(std::string msg)
     {
         try{
@@ -218,6 +221,7 @@ public:
     }
     }
 
+//반납함수
     std::string giveBack(std::string msg)
     {   
         try{
@@ -279,14 +283,15 @@ public:
                     // cout<<realenddate[0]<<realndate[0];
                     if(indate[0] > iete[0] || indate[1] > iete[1] || indate[2] > iete[2])
                     {
-                        int latecount;
+                        int latecount,vip;
                         string j="";
-                        unique_ptr<sql::PreparedStatement> ltmnt(conn->prepareStatement("SELECT latecount FROM GLID WHERE glp = ?"));
+                        unique_ptr<sql::PreparedStatement> ltmnt(conn->prepareStatement("SELECT latecount,vip FROM GLID WHERE glp = ?"));
                         ltmnt->setInt(1,this->glpid);
                         res=ltmnt->executeQuery();
                         res->next();
-                        latecount=res->getInt(1);                        
-                        if(latecount +1 == 3)
+                        latecount=res->getInt(1);
+                        vip=res->getInt(2);                        
+                        if(latecount +1 == 3 || vip==2)
                         {
                             
                             unique_ptr<sql::PreparedStatement> btmnt(conn->prepareStatement("UPDATE GLID SET vip = 2  where glp = ?"));
@@ -359,6 +364,7 @@ public:
     }
     }
 
+
     int datesplit(string date)
     {
         istringstream iss;
@@ -421,13 +427,14 @@ public:
         }
     }
 
+//관리함수
     void dateCheck( )
     {
        try{ 
-        multimap<int,string> rentcheck;
-        map<int,string> signcheck;
-        map<int,int> rentcount;
-        map<int,int> latecount;
+        multimap<int,string> rentcheck;//rent 테이블에서 glp랑 빌린날짜
+        map<int,string> signcheck; //GLID 테이블에서 glp랑 가입날짜
+        map<int,int> rentcount;//GLID 테이블에서 glp랑 정상반납횟수
+        map<int,int> latecount;//GLID 테이블에서 glp랑 연체횟수
         multimap<int,string>::iterator iter;
         multimap<int,int>::iterator ater;
         sql::ResultSet* res;
@@ -438,74 +445,105 @@ public:
         int* one=new int;
         *one=0;
     
-        while (1)
-        {
-            sleep(10);
-            unique_ptr<sql::PreparedStatement> btmnt(conn->prepareStatement("SELECT glp,rentend FROM RENT"));
-            res=btmnt->executeQuery();
-            while(res->next())
-            {
-                rentcheck.insert(pair<int,string>(res->getInt(1),res->getString(2)));
-                    
-            }
-            unique_ptr<sql::PreparedStatement> pstt(conn->prepareStatement("SELECT CURDATE()"));
-            res=pstt->executeQuery();
-            res->next();
-            cdate = res->getString(1);    
-            *cccdate=datesplit(cdate);
-            unique_ptr<sql::PreparedStatement> wtmnt(conn->prepareStatement("SELECT glp,signeddate,rencount,latecount FROM GLID"));
-            res=wtmnt->executeQuery();
-            while (res->next())
-            {
-                signcheck.insert(pair<int,string>(res->getInt(1),res->getString(2))) ;
-                
-            }
-            
-
-            for ( iter = rentcheck.begin(); iter!=rentcheck.end(); ++iter)
-            {
-                *eeedate=datesplit(iter->second);
-                
-                if(*cccdate-*eeedate-givemonth(*eeedate) >=14)
-                {
-                    if(*one!=iter->first)
-                    {
-                        *one=iter->first;
-                    
-                    unique_ptr<sql::PreparedStatement> xtmnt(conn->prepareStatement("UPDATE GLID SET vip = 2 WHERE glp = ?"));
-                        xtmnt->setInt(1,iter->first);
-                        xtmnt->executeQuery();
-
-                    cout<<iter->first<<"블랙\n";
-                    }      
-                }
-            } 
-            
-            for ( iter =signcheck.begin(); iter!=signcheck.end(); ++iter)
-            {
-                *cccdate=*cccdate%YEAR;
-                if(*cccdate>10000)
-                    *cccdate-10000+1200;
-                *eeedate=datesplit(iter->second)%YEAR;
-                *cccdate=*cccdate/100;
-                *eeedate=*eeedate/100;
-                if(*cccdate-*eeedate>=6)
-                {
-                    
-                }  
-            }
-            
-                
+                  
         
-            unique_ptr<sql::PreparedStatement> otmnt(conn->prepareStatement("UPDATE GLID SET vip = 1  where glp = ?"));
+        unique_ptr<sql::PreparedStatement> btmnt(conn->prepareStatement("SELECT glp,rentend FROM RENT"));
+        res=btmnt->executeQuery();
+        while(res->next())
+        {
+            rentcheck.insert(pair<int,string>(res->getInt(1),res->getString(2)));
+                
+        }
+        unique_ptr<sql::PreparedStatement> pstt(conn->prepareStatement("SELECT CURDATE()"));
+        res=pstt->executeQuery();
+        res->next();
+        cdate = res->getString(1);    
+        *cccdate=datesplit(cdate);
+        unique_ptr<sql::PreparedStatement> wtmnt(conn->prepareStatement("SELECT glp,signeddate,rentcount,latecount FROM GLID"));
+        res=wtmnt->executeQuery();
+        while (res->next())
+        {
+            signcheck.insert(pair<int,string>(res->getInt(1),res->getString(2))) ;
+            rentcount.insert(pair<int,int>(res->getInt(1),res->getInt(3)));
+            latecount.insert(pair<int,int>(res->getInt(1),res->getInt(4)));
+            
+        }
+        
+        //연체기간이 14일이상이면 블랙회원
+        for ( iter = rentcheck.begin(); iter!=rentcheck.end(); ++iter)
+        {
+            *eeedate=datesplit(iter->second);
+            
+            if(*cccdate-*eeedate>60)
+            {   
+            if(*cccdate-*eeedate-givemonth(*eeedate) >=14)
+            {
+                if(*one!=iter->first)
+                {
+                    *one=iter->first;
+                
+                unique_ptr<sql::PreparedStatement> xtmnt(conn->prepareStatement("UPDATE GLID SET vip = 2 WHERE glp = ?"));
+                    xtmnt->setInt(1,iter->first);
+                    xtmnt->executeQuery();
+
+                cout<<iter->first<<"블랙\n";
+                }      
+            }
+        }
+        } 
+        //6개월+빌린책10권이상+연체횟수0 일때 정기적으로 우수회원으로 만들어주는 부분
+        for ( iter =signcheck.begin(); iter!=signcheck.end(); ++iter)
+        {
+            unique_ptr<sql::PreparedStatement> mxtmnt(conn->prepareStatement("SELECT DATEDIFF(CURDATE(),?)")); 
+            mxtmnt->setString(1,iter->second);
+            res = mxtmnt->executeQuery(); 
+            res->next();
+            if(res->getInt(1)>=183)
+            {
+                if(rentcount[iter->first] >=10 && latecount[iter->first] == 0 ) 
+                {   
+                    unique_ptr<sql::PreparedStatement> xtmnt(conn->prepareStatement("UPDATE GLID SET vip = 1 WHERE glp = ?"));
+                    xtmnt->setInt(1,iter->first);
+                    xtmnt->executeQuery();
+                    cout<<iter->first<<": 우수회원으로 격상"<<endl;
+
+                }
+            }  
         
         }
+        
+        //블랙회원이 밴이되고나서 30일이 지나면 일반회원으로 만들어줌.
+        unique_ptr<sql::PreparedStatement> mxtmnt(conn->prepareStatement("SELECT bandate,glp FROM GLID"));
+        res = mxtmnt->executeQuery();
+        string bandate;
+        sql::ResultSet* guess;
+        while(res->next())
+        {
+            bandate=res->getString(1);
+            if(bandate.length()>0)
+            {
+                unique_ptr<sql::PreparedStatement> xtmnt(conn->prepareStatement("SELECT DATEDIFF(CURDATE(),?)"));
+                xtmnt->setString(1,bandate);
+                guess=xtmnt->executeQuery();
+                guess->next();
+                if(guess->getInt(1)>=30){
+                    unique_ptr<sql::PreparedStatement> gtmnt(conn->prepareStatement("UPDATE GLID SET vip = 0 WHERE glp = ?"));
+                    gtmnt->setInt(1,res->getInt(2));
+                    gtmnt->executeQuery();
+                    unique_ptr<sql::PreparedStatement> itmnt(conn->prepareStatement("UPDATE GLID SET bandate = NULL WHERE glp = ?"));
+                    itmnt->setInt(1,res->getInt(2));
+                    itmnt->executeQuery();
+                    cout<<res->getInt(2)<<": 일반회원으로 복귀"<<endl;
+                }
+            }
+        }
+        puts("정기점검 완료");
+        
     }catch(sql::SQLException &e)
     {
         cerr<<"sql::SQLException: "<<e.what()<<endl;
     } 
     }
-
 };
 
 #endif LSCLASS_H_

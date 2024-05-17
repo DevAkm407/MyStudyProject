@@ -8,13 +8,15 @@
 #include <sys/socket.h>
 #include <pthread.h>
 #include "lsclass.hpp"
+#include "bookcheckclass.hpp"
 #define BUF_SZIE 100
 #define MAX_CLNT 256
 using namespace std;
 void * handle_clnt(void* arg);
+void send_books(string msg,int sock);
 void send_msg(char * msg, int len,int clntsock);
 void error_handling(string message);
-int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt);
+int Rhandle(int sock,int checkf,char msg[BUF_SZIE],lsclass* clnt);
 int clnt_cnt=0;
 int clnt_socks[MAX_CLNT];
 void* chekingclnt(void* arg);
@@ -45,8 +47,8 @@ int main(int argc,char *argv[])
     if(listen(serv_sock,5)==-1)
         error_handling("listen() error");
     
-    // pthread_create(&ban_id,NULL,chekingclnt,(void*)&xxs);
-    // pthread_detach(ban_id);
+    pthread_create(&ban_id,NULL,chekingclnt,(void*)&xxs);
+    pthread_detach(ban_id);
     while (1)
     {
         clnt_adr_sz=sizeof(clnt_adr);
@@ -81,11 +83,10 @@ void* handle_clnt(void* arg)
     while ((str_len=read(clnt_sock,msg,sizeof(msg)))!=0)
     {  
         cout<<clnt_sock<<": "<<msg<<endl;
-        login=Rhandle(atoi(&msg[0]),msg,&clnt);
-        send_msg(msg,BUF_SZIE,clnt_sock);
+        login=Rhandle(clnt_sock,atoi(&msg[0]),msg,&clnt);
         memset(msg,0,BUF_SZIE);
     }
-            
+
     // send_msg(msg,str_len);
     pthread_mutex_lock(&mutx);//만약 다른 클라이언트가 비슷한 시기에 접속을 종료했다면 밑에 for문이 돌기전에 진입하게된다.그렇게되면 소켓번호를
     for ( i = 0; i <clnt_cnt ; i++)//재정렬하는 과정에서 하나가 또 지워지거나 정렬하고 있는거 또 정렬해서 순번이 꼬이는 사건이 발생할 수 있다. 그 사건을 막기위한 lock
@@ -124,6 +125,17 @@ void send_msg(char * msg, int len,int clntsock)
 
 
 
+//받은메시지만큼 버퍼크기를 할당
+void send_books(string msg,int sock)
+{
+
+    int c=msg.length();
+    char booksmsg[c];
+    msg.copy(booksmsg,c);
+    booksmsg[c-1]=0;
+    write(sock,booksmsg,c);
+}
+
 void error_handling(string message)
 {
     cerr<<message<<endl;
@@ -131,17 +143,19 @@ void error_handling(string message)
 }
 
 
-int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
+int Rhandle(int sock,int checkf,char msg[BUF_SZIE],lsclass* clnt)
 {
     // pthread_mutex_lock(&mutx);
     string copymsg=msg;
     string mail; 
+    bookcheckclass books;
     switch (checkf)
     {
     
     case 1:
-        
-        
+        mail =  books.splitfun(copymsg);
+        send_books(mail,sock);
+        memset(msg,0,BUF_SZIE);
         /*함수(atoi(&hand1),a[2])*/    
         break;
     
@@ -150,7 +164,9 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
     
        memset(msg,0,BUF_SZIE);
     
-       mail.copy(msg,mail.length()); 
+       mail.copy(msg,mail.length());
+
+       send_msg(msg,BUF_SZIE,sock); 
         //    send_msg(msg,mail.length());      
         /*함수(parameter[1],parameter[2])*/
         break;
@@ -162,7 +178,7 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
         memset(msg,0,BUF_SZIE);
 
         mail.copy(msg,mail.length());
-
+        send_msg(msg,BUF_SZIE,sock);
         /*함수(parameter[1],parameter[2])*/
         break;
     
@@ -172,7 +188,7 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
         memset(msg,0,BUF_SZIE);
 
         mail.copy(msg,mail.length());
-
+        send_msg(msg,BUF_SZIE,sock);
         /*함수(parameter[1])*/
         break;
     
@@ -182,6 +198,7 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
         memset(msg,0,BUF_SZIE);
             
         mail.copy(msg,mail.length());
+        send_msg(msg,BUF_SZIE,sock);
         /*함수(parameter[1])*/
         break;
     
@@ -194,6 +211,7 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
         memset(msg,0,BUF_SZIE);
         string  ph="프로토콜 위반" ;
         ph.copy(msg,ph.length());
+        send_msg(msg,BUF_SZIE,sock);
         break;
     }
 
@@ -202,8 +220,16 @@ int Rhandle(int checkf,char msg[BUF_SZIE],lsclass* clnt)
 }
 
  
-// void* chekingclnt(void* arg)
-// {
-//     lsclass* c=new lsclass;
-//     c->dateCheck();
-// }
+void* chekingclnt(void* arg)
+{
+    lsclass* c=new lsclass;
+   while (1)
+   {
+    sleep(1000);
+    pthread_mutex_lock(&mutx);//일단 업데이트를 하고 그다음의 클라이언트들의 요구를 받아줘야함(블랙되자마자 또는 우수회원되자마자 블랙되는걸 막음)
+    c->dateCheck();
+    pthread_mutex_unlock(&mutx);   
+   }
+   
+    
+}
