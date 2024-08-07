@@ -7,9 +7,10 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <pthread.h>
+#include <locale.h>
 #include "lsclass.hpp"
 #include "bookcheckclass.hpp"
-#define BUF_SZIE 100
+#define BUF_SZIE 1024
 #define MAX_CLNT 256
 using namespace std;
 void * handle_clnt(void* arg);
@@ -78,12 +79,12 @@ void* handle_clnt(void* arg)
     int str_len=0,i;
     int login=0;
     char msg[BUF_SZIE];
-    lsclass clnt;
+    lsclass* clnt =new lsclass;
     
     while ((str_len=read(clnt_sock,msg,sizeof(msg)))!=0)
     {  
         cout<<clnt_sock<<": "<<msg<<endl;
-        login=Rhandle(clnt_sock,atoi(&msg[0]),msg,&clnt);
+        login=Rhandle(clnt_sock,atoi(&msg[0]),msg,clnt);
         memset(msg,0,BUF_SZIE);
     }
 
@@ -100,6 +101,7 @@ void* handle_clnt(void* arg)
     }
     clnt_cnt--;
     pthread_mutex_unlock(&mutx);//모든 정렬이 끝나고나서 unlock
+    delete clnt;
     close(clnt_sock);
     return NULL;
 }
@@ -127,13 +129,32 @@ void send_msg(char * msg, int len,int clntsock)
 
 //받은메시지만큼 버퍼크기를 할당
 void send_books(string msg,int sock)
-{
-
-    int c=msg.length();
-    char booksmsg[c];
-    msg.copy(booksmsg,c);
-    booksmsg[c-1]=0;
-    write(sock,booksmsg,c);
+{   
+    istringstream iss(msg);
+    string mmsg;
+    int* c = new int;
+    char booksmsg[BUF_SZIE];
+    memset(booksmsg,0,BUF_SZIE);
+    while (getline(iss,mmsg))
+    {
+        mmsg=mmsg+"\n";
+        *c=mmsg.length()+1;
+        mmsg.copy(booksmsg,*c);
+        write(sock,(void*)c,sizeof(int));
+        // wchar_t rbm[c];
+        // mbstowcs(rbm,booksmsg,c);
+        write(sock,booksmsg,*c);
+        memset(booksmsg,0,BUF_SZIE);
+    }  
+    
+    delete c;
+    // int c=msg.size();
+    // char booksmsg[c+1];
+    // booksmsg[c]=0;
+    // msg.copy(booksmsg,c);
+    // // wchar_t rbm[c];
+    // // mbstowcs(rbm,booksmsg,c);
+    // write(sock,booksmsg,c);
 }
 
 void error_handling(string message)
@@ -148,25 +169,20 @@ int Rhandle(int sock,int checkf,char msg[BUF_SZIE],lsclass* clnt)
     // pthread_mutex_lock(&mutx);
     string copymsg=msg;
     string mail; 
-    bookcheckclass books;
+    bookcheckclass* books=new bookcheckclass;
     switch (checkf)
     {
     
     case 1:
-        mail =  books.splitfun(copymsg);
+        mail =  books->splitfun(copymsg);
         send_books(mail,sock);
-        memset(msg,0,BUF_SZIE);
         /*함수(atoi(&hand1),a[2])*/    
         break;
     
     case 2: //회원가입
        mail = clnt->sign_up(copymsg);
-    
-       memset(msg,0,BUF_SZIE);
-    
-       mail.copy(msg,mail.length());
-
-       send_msg(msg,BUF_SZIE,sock); 
+     
+       send_books(mail,sock);
         //    send_msg(msg,mail.length());      
         /*함수(parameter[1],parameter[2])*/
         break;
@@ -175,35 +191,27 @@ int Rhandle(int sock,int checkf,char msg[BUF_SZIE],lsclass* clnt)
     
         mail=clnt->loginService(msg);
 
-        memset(msg,0,BUF_SZIE);
-
-        mail.copy(msg,mail.length());
-        send_msg(msg,BUF_SZIE,sock);
+        send_books(mail,sock);
         /*함수(parameter[1],parameter[2])*/
         break;
     
     case 4: //대여서비스
         mail = clnt->rental(copymsg);
 
-        memset(msg,0,BUF_SZIE);
-
-        mail.copy(msg,mail.length());
-        send_msg(msg,BUF_SZIE,sock);
+        send_books(mail,sock);
         /*함수(parameter[1])*/
         break;
     
     case 5: //반납
         mail = clnt->giveBack(copymsg);
 
-        memset(msg,0,BUF_SZIE);
-            
-        mail.copy(msg,mail.length());
-        send_msg(msg,BUF_SZIE,sock);
+        send_books(mail,sock);
         /*함수(parameter[1])*/
         break;
     
-    case 6: //회원탈퇴
-        
+    case 6: //추천도서
+        mail = books->TodayBook();
+        send_books(mail,sock);
         /*함수(parameter[1])*/
         break;                
     
@@ -214,7 +222,8 @@ int Rhandle(int sock,int checkf,char msg[BUF_SZIE],lsclass* clnt)
         send_msg(msg,BUF_SZIE,sock);
         break;
     }
-
+  
+    delete books;
     // pthread_mutex_unlock(&mutx);
     return 0; 
 }
@@ -225,7 +234,7 @@ void* chekingclnt(void* arg)
     lsclass* c=new lsclass;
    while (1)
    {
-    sleep(1000);
+    sleep(20);
     pthread_mutex_lock(&mutx);//일단 업데이트를 하고 그다음의 클라이언트들의 요구를 받아줘야함(블랙되자마자 또는 우수회원되자마자 블랙되는걸 막음)
     c->dateCheck();
     pthread_mutex_unlock(&mutx);   

@@ -1,5 +1,6 @@
 #ifndef LSCLASS_H__
 #define LSCLASS_H__
+#include<exception>
 #include<iostream>
 #include<string>
 #include<mariadb/conncpp.hpp>
@@ -241,15 +242,15 @@ public:
         else
         {
                 unique_ptr<sql::PreparedStatement> atmnt(conn->prepareStatement("SELECT bookcode,glp,rentend FROM RENT WHERE bookcode = ?"));
-                sql::ResultSet* res;
+                
                 string ndate[4];
                 char realenddate[3][5];
                 atmnt->setString(1,splitmsg[1]);
-                res=atmnt->executeQuery();
+                shared_ptr<sql::ResultSet> res(atmnt->executeQuery());
                 res->next();
                 enddate[0]=res->getString(3);
-                int* indate=new int[3];
-                int* iete= new int[3];
+                shared_ptr<int[]>indate(new int[3]);
+                shared_ptr<int[]> iete(new int[3]);
                 if(res->rowsCount()!=0 && res->getInt(2)==this->glpid)
                 {
                     unique_ptr<sql::PreparedStatement> ztmnt(conn->prepareStatement("DELETE FROM RENT WHERE bookcode = ?"));
@@ -267,7 +268,7 @@ public:
 
                     
                     unique_ptr<sql::PreparedStatement> ftmnt(conn->prepareStatement("SELECT CURDATE()"));
-                    res=ftmnt->executeQuery();
+                    res=make_shared<sql::ResultSet>(ftmnt->executeQuery());
                     res->next();
                     ndate[0]=res->getString(1);
                     istringstream ssdt(ndate[0]);
@@ -287,7 +288,7 @@ public:
                         string j="";
                         unique_ptr<sql::PreparedStatement> ltmnt(conn->prepareStatement("SELECT latecount,vip FROM GLID WHERE glp = ?"));
                         ltmnt->setInt(1,this->glpid);
-                        res=ltmnt->executeQuery();
+                        res=make_shared<sql::ResultSet>(ltmnt->executeQuery());
                         res->next();
                         latecount=res->getInt(1);
                         vip=res->getInt(2);                        
@@ -301,7 +302,7 @@ public:
 
                             string banddate;
                             unique_ptr<sql::PreparedStatement> htmnt(conn->prepareStatement("SELECT ADDDATE(CURDATE(),30) "));
-                            res=htmnt->executeQuery();
+                            res=make_shared<sql::ResultSet>(htmnt->executeQuery());
                             res->next();
                             banddate = res->getString(1);
                             unique_ptr<sql::PreparedStatement> vtmnt(conn->prepareStatement("UPDATE GLID SET bandate = ?  where glp = ?"));
@@ -316,8 +317,7 @@ public:
                         btmnt->setInt(2,this->glpid);
                         btmnt->executeQuery();
                         k= j+"반납완료되었습니다.";
-                        delete indate;
-                        delete iete;
+                       
                         
                         return k;
 
@@ -328,7 +328,7 @@ public:
                         int rentcount;
                         unique_ptr<sql::PreparedStatement> ltmnt(conn->prepareStatement("SELECT rentcount,latecount FROM GLID WHERE glp = ?"));
                         ltmnt->setInt(1,this->glpid);
-                        res=ltmnt->executeQuery();
+                        res=make_shared<sql::ResultSet>(ltmnt->executeQuery());
                         res->next();
                         rentcount=res->getInt(1);
 
@@ -337,22 +337,18 @@ public:
                         btmnt->setInt(2,this->glpid);
                         btmnt->executeQuery();
 
-                        delete indate;
-                        delete iete;    
                         k=j+" 반납완료되었습니다.감사합니다.";
                         return k;   
                     }
                     
-                    delete indate;
-                    delete iete;
+                  
                 
                     k="반납완료되었습니다.";
                     return k;
                 }
                 else
                 {
-                    delete indate;
-                    delete iete;
+                  
                     k="대여한 책이아닙니다.";
                     return k;
                 }
@@ -360,7 +356,14 @@ public:
         return k;
     }catch(sql::SQLException &e)
     {
-        cerr<<"SQLException : "<<e.what()<<endl;
+        
+        try
+        {cerr<<"SQLException : "<<e.what()<<endl;
+        }catch(std::exception &e)
+        {
+            cerr<<"STDException : "<<e.what()<<endl;
+        }
+        
     }
     }
 
@@ -472,25 +475,21 @@ public:
         //연체기간이 14일이상이면 블랙회원
         for ( iter = rentcheck.begin(); iter!=rentcheck.end(); ++iter)
         {
-            *eeedate=datesplit(iter->second);
-            
-            if(*cccdate-*eeedate>60)
-            {   
-            if(*cccdate-*eeedate-givemonth(*eeedate) >=14)
+            unique_ptr<sql::PreparedStatement> mxtmnt(conn->prepareStatement("SELECT DATEDIFF(CURDATE(),?)")); 
+            mxtmnt->setString(1,iter->second);
+            res = mxtmnt->executeQuery(); 
+            res->next();
+            if(res->getInt(1)>=14)
             {
-                if(*one!=iter->first)
-                {
-                    *one=iter->first;
-                
-                unique_ptr<sql::PreparedStatement> xtmnt(conn->prepareStatement("UPDATE GLID SET vip = 2 WHERE glp = ?"));
+                   
+                    unique_ptr<sql::PreparedStatement> xtmnt(conn->prepareStatement("UPDATE GLID SET vip = 2 WHERE glp = ?"));
                     xtmnt->setInt(1,iter->first);
                     xtmnt->executeQuery();
+                    cout<<iter->first<<": 블랙"<<endl;
 
-                cout<<iter->first<<"블랙\n";
-                }      
-            }
-        }
+            }  
         } 
+        
         //6개월+빌린책10권이상+연체횟수0 일때 정기적으로 우수회원으로 만들어주는 부분
         for ( iter =signcheck.begin(); iter!=signcheck.end(); ++iter)
         {

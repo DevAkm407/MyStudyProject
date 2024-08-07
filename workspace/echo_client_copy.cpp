@@ -138,48 +138,52 @@ int main(int argc, char *argv[])
         error_handling("connect() error!");
     else
         cout<<"connected......";
-    string msg=R"({"type" : "D",
-    "num":5})";
+        
+    string msg=R"({
+        "key" : "데이터전송",
+        "3" : "클로버"
+        })";
+    puts(msg.c_str());
     json j=json::parse(msg);
     char* sbuf =new char[BUF_SZIE];
-    str_len=read(sock,sbuf,BUF_SZIE);
-    sbuf[str_len]=0;
-    puts(sbuf);
-    for(int i=0;i<6;i++)
-    {
-        memset(message,0,BUF_SZIE);
-        cout<<"Input message(Q to quit): ";
-        fgets(message,BUF_SZIE,stdin);
-        string k =message;
-        k.replace(k.find('\n'),k.length(),"");
-        puts(k.c_str());
-        j["type"] = k;
-        memset(message,0,BUF_SZIE);
-        fgets(message,BUF_SZIE,stdin);
-        k =message;
-        memset(message,0,BUF_SZIE);
-        puts(k.c_str());
-        j["num"] =atoi(k.c_str());
-        j.dump().copy(message,j.dump().length());
-        write(sock,message,strlen(message));
-        memset(message,0,BUF_SZIE);
-        str_len=read(sock,message,BUF_SZIE);
-        message[str_len]=0;
-        cout<<"Message from server: "<<message;
-    }
+    // str_len=read(sock,sbuf,BUF_SZIE);
+    // sbuf[str_len]=0;
+    // puts(sbuf);
+    // for(int i=0;i<6;i++)
+    // {
+    //     memset(message,0,BUF_SZIE);
+    //     cout<<"Input message(Q to quit): ";
+    //     fgets(message,BUF_SZIE,stdin);
+    //     string k =message;
+    //     k.replace(k.find('\n'),k.length(),"");
+    //     puts(k.c_str());
+    //     j["type"] = k;
+    //     memset(message,0,BUF_SZIE);
+    //     fgets(message,BUF_SZIE,stdin);
+    //     k =message;
+    //     memset(message,0,BUF_SZIE);
+    //     puts(k.c_str());
+    //     j["num"] =atoi(k.c_str());
+    //     j.dump().copy(message,j.dump().length());
+    //     write(sock,message,strlen(message));
+    //     memset(message,0,BUF_SZIE);
+    //     str_len=read(sock,message,BUF_SZIE);
+    //     message[str_len]=0;
+    //     cout<<"Message from server: "<<message;
+    // }
     
-    while (1)
-    {
-        cout<<"Input message(Q to quit): ";
+    // while (1)
+    // {
+        // cout<<"Input message(Q to quit): ";
         memset(message,0,BUF_SZIE);
-        fgets(message,BUF_SZIE,stdin);
+        // fgets(message,BUF_SZIE,stdin);
         // string k =message;
         // k.replace(k.find('\n'),k.length(),"");
         // j["type"] =k;
-        if(!strcmp(message,"q\n") || !strcmp(message,"Q\n"))
-            break;
+        // if(!strcmp(message,"q\n") || !strcmp(message,"Q\n"))
+        //     break;
 
-        // j.dump().copy(message,j.dump().length());
+        j.dump().copy(message,j.dump().length());
         write(sock,message,strlen(message));
         memset(message,0,BUF_SZIE);
         // getimg("a",sock);
@@ -187,7 +191,7 @@ int main(int argc, char *argv[])
         message[str_len]=0;
         cout<<"Message from server: "<<message;
    
-    }
+    // }
     close(sock);
     return 0;
     

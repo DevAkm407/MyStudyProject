@@ -53,7 +53,7 @@ int main(int argc,char* argv[])
 
     
     
-    back_msg((void*)&sock);
+    // back_msg((void*)&sock);
     // pthread_join(snd_thread,&thread_return); //join으로 thread_return이라는 변수로 thread의 반환값을 가져옴 현재 프로세스에선 사용되지 않음
     
     pthread_join(rcv_thread,&thread_return); //join으로 thread_return이라는 변수로 thread의 반환값을 가져옴 현재 프로세스에선 사용되지 않음

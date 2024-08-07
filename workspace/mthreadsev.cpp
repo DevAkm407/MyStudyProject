@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <pthread.h>
-#define BUF_SZIE 100
+#define BUF_SZIE 1024
 #define MAX_CLNT 256
 using namespace std;
 void * handle_clnt(void* arg);
@@ -20,22 +20,23 @@ pthread_mutex_t mutx;
 
 int main(int argc,char *argv[])
 {
+    signal(SIGPIPE,SIG_IGN);
     int serv_sock,clnt_sock;
     sockaddr_in serv_adr,clnt_adr;
     socklen_t clnt_adr_sz;
     pthread_t t_id;
-    if(argc!=2)
-    {
-        cout<<"Usage : "<<argv[0] <<" <prot>\n";
-        exit(1);
-    }
+    // if(argc!=2)
+    // {
+    //     cout<<"Usage : "<<argv[0] <<" <prot>\n";
+    //     exit(1);
+    // }
     pthread_mutex_init(&mutx,NULL);
     serv_sock=socket(PF_INET,SOCK_STREAM,0);
 
     memset(&serv_adr,0,sizeof(serv_adr));
     serv_adr.sin_family=AF_INET;
     serv_adr.sin_addr.s_addr=htonl(INADDR_ANY);
-    serv_adr.sin_port=htons(atoi(argv[1]));
+    serv_adr.sin_port=htons(atoi("10001"));
 
     if(bind(serv_sock,(sockaddr*)&serv_adr,sizeof(serv_adr)))
         error_handling("bind() error");
@@ -52,7 +53,7 @@ int main(int argc,char *argv[])
 
         pthread_create(&t_id,NULL,handle_clnt,(void*)&clnt_sock);//쓰레드 id하나로 클라이언트 수만큼 쓰래드를 생성해주는 부분 클라이언트는 1개의 전용 쓰래드를 할당받음 
         pthread_detach(t_id);//할당한 쓰래드를 프로세스 종료와 함께 종료시키거나 클라이언트가 종료하면 자동으로 쓰레드가 종료되게 때어냄
-        cout<<"Connected client IP: "<<inet_ntoa(clnt_adr.sin_addr);
+        puts(inet_ntoa(clnt_adr.sin_addr));
     }
     close(serv_sock);
     return 0;
@@ -61,11 +62,22 @@ int main(int argc,char *argv[])
 void* handle_clnt(void* arg)
 {
     int clnt_sock=*((int*)arg);
-    int str_len=0,i;
+    int str_len=0,i;    
+    string j=R"(
+    {
+        "protocol" : "동물이름",
+        "animal" : "Quokka"
+    })";
     char msg[BUF_SZIE];
-
-    while ((str_len=read(clnt_sock,msg,sizeof(msg)))!=0)
-        send_msg(msg,str_len);
+    char asg[BUF_SZIE];
+    j.copy(asg,j.length());
+    int test[10]={1,2,3,4,5,6,7,8,9,10};
+    while ((str_len=read(clnt_sock,msg,10))!=0){
+        msg[str_len]=0;
+        puts(msg);
+        send_msg(asg,BUF_SZIE);
+        memset(msg,0,BUF_SZIE);
+    }
     pthread_mutex_lock(&mutx);//만약 다른 클라이언트가 비슷한 시기에 접속을 종료했다면 밑에 for문이 돌기전에 진입하게된다.그렇게되면 소켓번호를
     for ( i = 0; i <clnt_cnt ; i++)//재정렬하는 과정에서 하나가 또 지워지거나 정렬하고 있는거 또 정렬해서 순번이 꼬이는 사건이 발생할 수 있다. 그 사건을 막기위한 lock
     {
@@ -82,7 +94,7 @@ void* handle_clnt(void* arg)
     return NULL;
 }
 
-void send_msg(char * msg, int len)
+void send_msg(char* msg, int len)
 {
 
     int i;
@@ -92,8 +104,8 @@ void send_msg(char * msg, int len)
     for(i=0; i<clnt_cnt; i++)
     {
 
-        write(clnt_socks[i],msg,len);
-
+        write(clnt_socks[i],msg,BUF_SZIE);
+        sleep(10);
     }
     pthread_mutex_unlock(&mutx);//모든 메시지를 사용자에게 보내고 나서 언락을 풀어준다.
 }

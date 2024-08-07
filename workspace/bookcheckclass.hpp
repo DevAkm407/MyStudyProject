@@ -206,7 +206,7 @@ string BookcodeFind(std::string msg)// 책 번호
     try
     {
         unique_ptr<sql::PreparedStatement> psmt(conn -> prepareStatement("SELECT bookcode,glp FROM RENT"));
-        sql::ResultSet* res = psmt -> executeQuery(); 
+        shared_ptr<sql::ResultSet> res(psmt -> executeQuery()); 
         string aa;
         vector<string>::iterator iter;
         while(res -> next())
@@ -217,7 +217,7 @@ string BookcodeFind(std::string msg)// 책 번호
         unique_ptr<sql::PreparedStatement> pstmt(conn -> prepareStatement("SELECT * FROM JANGDUCK WHERE bookcode LIKE ? "));
         bookcode="%"+bookcode+"%";
         pstmt ->setString(1,bookcode);
-        res = pstmt->executeQuery();
+        res=make_shared<sql::ResultSet>(pstmt->executeQuery());
         while (res->next())
         {
             aa=res->getString(3);
@@ -274,6 +274,29 @@ string WriterFind(std::string msg)// 저자
         return b_writer;    
     }
     
+    catch(const std::exception& e)
+    {
+        std::cerr << "연결 오류 " << e.what() << '\n';
+    }
+    
+}
+
+string TodayBook()// 추천도서 30권
+{
+    std::string b_today;
+    ostringstream oss;
+    try
+    {
+        unique_ptr<sql::PreparedStatement> psmt( conn -> prepareStatement("SELECT bookcode, booktitle, writer FROM JANGDUCK ORDER BY  RAND() LIMIT 30"));
+        sql::ResultSet* res = psmt -> executeQuery();
+        while(res -> next())
+        {
+            oss<< "책 번호: " << res -> getString(1) << " 제목: " << res -> getString(2) << " 저자: " << res -> getString(3) << "\n";
+        }
+        b_today=oss.str();
+        return b_today;
+    }
+        
     catch(const std::exception& e)
     {
         std::cerr << "연결 오류 " << e.what() << '\n';
