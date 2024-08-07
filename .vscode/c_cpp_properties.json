@@ -2,8 +2,9 @@
     "configurations": [
         {
             "name": "Linux",
-            "includePath": [
-                "${workspaceFolder}/**"
+            "includePath": [                
+                "${workspaceFolder}/**",
+                "/usr/local/include/opencv4"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
