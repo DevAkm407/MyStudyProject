@@ -344,26 +344,7 @@ string ThePython(string msg,int sock) // 큐에 대기중인 클라이언트소�
             imgbuf[i]=hand[i];       
         }
         write(sock,imgbuf,hand.size());
-        // len=hand.size()/4000;
-        // modulo=hand.size()%4000;
-        // uchar* ubuf=new uchar[4000];
-        // memset(ubuf,0,BUF_SZIE);
-        // for(int i=0; i<len; i++)
-        // {            
-        //     for (int j = 0; j < 4000; j++)
-        //     {
-        //        ubuf[i] =imgbuf[j+i+4000];
-        //     }
-        //     write(sock,ubuf,BUF_SZIE);
-        //     memset(ubuf,0,BUF_SZIE);
-        // }
-        // delete ubuf;
-        // uchar* mbuf=new uchar[modulo];
-        // for (int z = len*4000; z < len*4000+modulo; z++)
-        // {
-        //     mbuf[z-len*4000] =imgbuf[z];
-        // }
-        // write(sock,mbuf,modulo);
+       
         diaData.erase(diaData.begin());
         memset(buf,0,BUF_SZIE);
         usleep(10000);
