@@ -1,0 +1,117 @@
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.AssemblyReference.cache
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\diaprice.g.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\mainpage.g.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\myprice.g.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\select_page.g.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\Window1.g.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\App.g.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond_MarkupCompile.cache
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond_MarkupCompile.lref
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\diamond.exe
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\diamond.deps.json
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\diamond.runtimeconfig.json
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\diamond.dll
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\diamond.pdb
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\LiveCharts.dll
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\LiveCharts.Wpf.dll
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\Users\akm\source\repos\diamond\diamond\bin\Debug\net8.0-windows\WpfAnimatedGif.dll
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\App.baml
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\MainWindow.baml
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\MyResourceDictionary.baml
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\diaprice.baml
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\mainpage.baml
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\myprice.baml
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\select_page.baml
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\VIew\Window1.baml
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.g.resources
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.AssemblyInfoInputs.cache
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.AssemblyInfo.cs
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.CoreCompileInputs.cache
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.Up2Date
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.dll
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\refint\diamond.dll
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.pdb
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\diamond.genruntimeconfig.cache
+C:\Users\akm\source\repos\diamond\diamond\obj\Debug\net8.0-windows\ref\diamond.dll
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.exe
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.deps.json
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.runtimeconfig.json
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.dll
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.pdb
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\LiveCharts.dll
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\LiveCharts.Wpf.dll
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\Users\lms\Desktop\diamond\diamond\diamond\bin\Debug\net8.0-windows\WpfAnimatedGif.dll
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.AssemblyReference.cache
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\diaprice.g.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\mainpage.g.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\myprice.g.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\select_page.g.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\Window1.g.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\App.g.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond_MarkupCompile.cache
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond_MarkupCompile.lref
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\App.baml
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\MainWindow.baml
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\MyResourceDictionary.baml
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\diaprice.baml
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\mainpage.baml
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\myprice.baml
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\select_page.baml
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\Window1.baml
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.g.resources
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.AssemblyInfoInputs.cache
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.AssemblyInfo.cs
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.CoreCompileInputs.cache
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.Up2Date
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.dll
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\refint\diamond.dll
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.pdb
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.genruntimeconfig.cache
+C:\Users\lms\Desktop\diamond\diamond\diamond\obj\Debug\net8.0-windows\ref\diamond.dll
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.exe
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.deps.json
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.runtimeconfig.json
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.dll
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\diamond.pdb
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\LiveCharts.dll
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\LiveCharts.Wpf.dll
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\bin\Debug\net8.0-windows\WpfAnimatedGif.dll
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.AssemblyReference.cache
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\diaprice.g.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\mainpage.g.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\myprice.g.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\select_page.g.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\Window1.g.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\App.g.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond_MarkupCompile.cache
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond_MarkupCompile.lref
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\App.baml
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\MainWindow.baml
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\MyResourceDictionary.baml
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\diaprice.baml
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\mainpage.baml
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\myprice.baml
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\select_page.baml
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\VIew\Window1.baml
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.g.resources
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.AssemblyInfoInputs.cache
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.AssemblyInfo.cs
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.CoreCompileInputs.cache
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.csproj.Up2Date
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.dll
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\refint\diamond.dll
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.pdb
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\diamond.genruntimeconfig.cache
+C:\Users\angha\OneDrive\바탕 화면\diamond\diamond\diamond\obj\Debug\net8.0-windows\ref\diamond.dll

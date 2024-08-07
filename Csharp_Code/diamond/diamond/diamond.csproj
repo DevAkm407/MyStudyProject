@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Properties\Resources.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\blabel.png" />
+    <None Remove="Resources\diamond.png" />
+    <None Remove="Resources\diamond1.png" />
+    <None Remove="Resources\diamond2.png" />
+    <None Remove="Resources\diamondRing.png" />
+    <None Remove="Resources\diamondring2.gif" />
+    <None Remove="Resources\family.jpg" />
+    <None Remove="Resources\graph1.png" />
+    <None Remove="Resources\purple-button.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\blabel.png" />
+    <Resource Include="Resources\diamondring2.gif" />
+    <Resource Include="Resources\graph1.png" />
+    <Resource Include="Resources\HSSantokki-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </Resource>
+    <Resource Include="Resources\diamond.png" />
+    <Resource Include="Resources\diamond1.png" />
+    <Resource Include="Resources\diamond2.png" />
+    <Resource Include="Resources\diamondRing.png" />
+    <Resource Include="Resources\family.jpg" />
+    <Resource Include="Resources\purple-button.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

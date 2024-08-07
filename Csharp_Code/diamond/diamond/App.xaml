@@ -1,0 +1,23 @@
+﻿<Application x:Class="diamond.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"             
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ViewModel="clr-namespace:diamond.ViewModel"
+             xmlns:VIew="clr-namespace:diamond.VIew"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <FontFamily x:Key="Mountain Rabbit">/diamond;component/Resources/#HS산토끼체</FontFamily>
+        <DataTemplate DataType="{x:Type ViewModel:MainPageVMD}">
+            <VIew:mainpage/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type ViewModel:Select_Page_VMD}">
+            <VIew:select_page/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type ViewModel:Price_VMD}">
+            <VIew:diaprice/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type ViewModel:History_VMD}">
+            <VIew:myprice/>
+        </DataTemplate>
+    </Application.Resources>
+   
+</Application>

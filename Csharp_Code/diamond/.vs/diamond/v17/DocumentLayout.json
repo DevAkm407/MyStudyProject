@@ -1,0 +1,450 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\model\\tcpsokcets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\model\\tcpsokcets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\viewmodel\\sign_up_mvvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\viewmodel\\sign_up_mvvm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\viewmodel\\select_page_vmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\viewmodel\\select_page_vmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\viewmodel\\price_vmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\viewmodel\\price_vmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\viewmodel\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\viewmodel\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\viewmodel\\mainpagevmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\viewmodel\\mainpagevmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\viewmodel\\mainpagerc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\viewmodel\\mainpagerc.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\viewmodel\\history_vmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\viewmodel\\history_vmd.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\window1.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\window1.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\select_page.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\select_page.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\myprice.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\myprice.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\mainpage.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\diaprice.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\diaprice.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\myresourcedictionary.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\myresourcedictionary.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\mainpage.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\myprice.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\myprice.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\diaprice.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\diaprice.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\window1.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\window1.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\view\\select_page.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\view\\select_page.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\akm\\AppData\\Local\\Temp\\.vsdbgsrc\\24c86bd98e5719a23f2ba55f85d6d28c98fb45abfb91e4f60c9542081fab181f\\XamlReader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\obj\\Debug\\net8.0-windows\\VIew\\mainpage.g.i.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:diamond\\obj\\Debug\\net8.0-windows\\VIew\\mainpage.g.i.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\properties\\resources.resx||{FF4D6ACA-9352-4A5F-821E-F4D6EBDCAB11}",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\properties\\resources.resx||{FF4D6ACA-9352-4A5F-821E-F4D6EBDCAB11}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|c:\\users\\angha\\onedrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\diamond.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{49C6A4DC-FF72-43D1-9A98-F13D10752D1B}|diamond\\diamond.csproj|solutionrelative:diamond\\diamond.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 772,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Sign_UP_MVVM.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\Sign_UP_MVVM.cs",
+              "RelativeDocumentMoniker": "diamond\\ViewModel\\Sign_UP_MVVM.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\Sign_UP_MVVM.cs",
+              "RelativeToolTip": "diamond\\ViewModel\\Sign_UP_MVVM.cs",
+              "ViewState": "AQIAACsAAAAAAAAAAAAzwEUAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-27T04:45:26.245Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TcpSokcets.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\Model\\TcpSokcets.cs",
+              "RelativeDocumentMoniker": "diamond\\Model\\TcpSokcets.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\Model\\TcpSokcets.cs",
+              "RelativeToolTip": "diamond\\Model\\TcpSokcets.cs",
+              "ViewState": "AQIAAAUAAAAAAAAAAAA3wB4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T07:26:57.061Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MainPageVMD.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\MainPageVMD.cs",
+              "RelativeDocumentMoniker": "diamond\\ViewModel\\MainPageVMD.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\MainPageVMD.cs",
+              "RelativeToolTip": "diamond\\ViewModel\\MainPageVMD.cs",
+              "ViewState": "AQIAAFcAAAAAAAAAAAAzwHEAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T10:14:48.879Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "diamond\\AssemblyInfo.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\AssemblyInfo.cs",
+              "RelativeToolTip": "diamond\\AssemblyInfo.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-25T03:26:13.941Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "diamond\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\MainWindow.xaml",
+              "RelativeToolTip": "diamond\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-25T00:24:28.651Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "App.xaml",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\App.xaml",
+              "RelativeDocumentMoniker": "diamond\\App.xaml",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\App.xaml",
+              "RelativeToolTip": "diamond\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-22T12:08:08.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Select_Page_VMD.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\Select_Page_VMD.cs",
+              "RelativeDocumentMoniker": "diamond\\ViewModel\\Select_Page_VMD.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\Select_Page_VMD.cs",
+              "RelativeToolTip": "diamond\\ViewModel\\Select_Page_VMD.cs",
+              "ViewState": "AQIAABMAAAAAAAAAAABDwCwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T11:27:57.108Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Price_VMD.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\Price_VMD.cs",
+              "RelativeDocumentMoniker": "diamond\\ViewModel\\Price_VMD.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\Price_VMD.cs",
+              "RelativeToolTip": "diamond\\ViewModel\\Price_VMD.cs",
+              "ViewState": "AQIAAH8AAAAAAAAAAAAQwJkAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-25T05:16:48.113Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "MainWindowViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\MainWindowViewModel.cs",
+              "RelativeDocumentMoniker": "diamond\\ViewModel\\MainWindowViewModel.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\MainWindowViewModel.cs",
+              "RelativeToolTip": "diamond\\ViewModel\\MainWindowViewModel.cs",
+              "ViewState": "AQIAADEAAAAAAAAAAAAQwFIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-25T01:59:21.939Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MainPageRC.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\MainPageRC.cs",
+              "RelativeDocumentMoniker": "diamond\\ViewModel\\MainPageRC.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\MainPageRC.cs",
+              "RelativeToolTip": "diamond\\ViewModel\\MainPageRC.cs",
+              "ViewState": "AQIAAB8AAAAAAAAAAAAzwDkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T10:30:18.695Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "History_VMD.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\History_VMD.cs",
+              "RelativeDocumentMoniker": "diamond\\ViewModel\\History_VMD.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\ViewModel\\History_VMD.cs",
+              "RelativeToolTip": "diamond\\ViewModel\\History_VMD.cs",
+              "ViewState": "AQIAAGwAAAAAAAAAAAAzwIYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-25T06:19:43.747Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Window1.xaml",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\Window1.xaml",
+              "RelativeDocumentMoniker": "diamond\\VIew\\Window1.xaml",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\Window1.xaml",
+              "RelativeToolTip": "diamond\\VIew\\Window1.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-23T01:36:24.749Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "select_page.xaml",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\select_page.xaml",
+              "RelativeDocumentMoniker": "diamond\\VIew\\select_page.xaml",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\select_page.xaml",
+              "RelativeToolTip": "diamond\\VIew\\select_page.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-23T02:30:05.819Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "myprice.xaml",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\myprice.xaml",
+              "RelativeDocumentMoniker": "diamond\\VIew\\myprice.xaml",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\myprice.xaml",
+              "RelativeToolTip": "diamond\\VIew\\myprice.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-24T10:15:32.414Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "mainpage.xaml",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\mainpage.xaml",
+              "RelativeDocumentMoniker": "diamond\\VIew\\mainpage.xaml",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\mainpage.xaml",
+              "RelativeToolTip": "diamond\\VIew\\mainpage.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-25T02:13:18.748Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "diaprice.xaml",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\diaprice.xaml",
+              "RelativeDocumentMoniker": "diamond\\VIew\\diaprice.xaml",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\diaprice.xaml",
+              "RelativeToolTip": "diamond\\VIew\\diaprice.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-23T03:47:16.553Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "MyResourceDictionary.xaml",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\MyResourceDictionary.xaml",
+              "RelativeDocumentMoniker": "diamond\\MyResourceDictionary.xaml",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\MyResourceDictionary.xaml",
+              "RelativeToolTip": "diamond\\MyResourceDictionary.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-07-25T01:21:05.673Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "mainpage.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\mainpage.xaml.cs",
+              "RelativeDocumentMoniker": "diamond\\VIew\\mainpage.xaml.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\mainpage.xaml.cs",
+              "RelativeToolTip": "diamond\\VIew\\mainpage.xaml.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAawBoAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-25T02:13:49.835Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "diaprice.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\diaprice.xaml.cs",
+              "RelativeDocumentMoniker": "diamond\\VIew\\diaprice.xaml.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\diaprice.xaml.cs",
+              "RelativeToolTip": "diamond\\VIew\\diaprice.xaml.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAABkAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-23T05:03:29.338Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "myprice.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\myprice.xaml.cs",
+              "RelativeDocumentMoniker": "diamond\\VIew\\myprice.xaml.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\myprice.xaml.cs",
+              "RelativeToolTip": "diamond\\VIew\\myprice.xaml.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAYwBgAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T03:15:43.02Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Window1.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\Window1.xaml.cs",
+              "RelativeDocumentMoniker": "diamond\\VIew\\Window1.xaml.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\Window1.xaml.cs",
+              "RelativeToolTip": "diamond\\VIew\\Window1.xaml.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAADwvxgAAAAwAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-27T05:14:00.526Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "select_page.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\select_page.xaml.cs",
+              "RelativeDocumentMoniker": "diamond\\VIew\\select_page.xaml.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\VIew\\select_page.xaml.cs",
+              "RelativeToolTip": "diamond\\VIew\\select_page.xaml.cs",
+              "ViewState": "AQIAABAAAAAAAAAAAAAvwBwAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-24T11:27:11.526Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "XamlReader.cs",
+              "DocumentMoniker": "C:\\Users\\akm\\AppData\\Local\\Temp\\.vsdbgsrc\\24c86bd98e5719a23f2ba55f85d6d28c98fb45abfb91e4f60c9542081fab181f\\XamlReader.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\akm\\AppData\\Local\\Temp\\.vsdbgsrc\\24c86bd98e5719a23f2ba55f85d6d28c98fb45abfb91e4f60c9542081fab181f\\XamlReader.cs",
+              "ToolTip": "C:\\Users\\akm\\AppData\\Local\\Temp\\.vsdbgsrc\\24c86bd98e5719a23f2ba55f85d6d28c98fb45abfb91e4f60c9542081fab181f\\XamlReader.cs [\uC77D\uAE30 \uC804\uC6A9]",
+              "RelativeToolTip": "..\\..\\..\\..\\akm\\AppData\\Local\\Temp\\.vsdbgsrc\\24c86bd98e5719a23f2ba55f85d6d28c98fb45abfb91e4f60c9542081fab181f\\XamlReader.cs [\uC77D\uAE30 \uC804\uC6A9]",
+              "ViewState": "AQIAAPABAAAAAAAAAAAMwP4BAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-25T05:47:19.075Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "diamond\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\MainWindow.xaml.cs",
+              "RelativeToolTip": "diamond\\MainWindow.xaml.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAiAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-22T06:17:26.032Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "mainpage.g.i.cs",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\obj\\Debug\\net8.0-windows\\VIew\\mainpage.g.i.cs",
+              "RelativeDocumentMoniker": "diamond\\obj\\Debug\\net8.0-windows\\VIew\\mainpage.g.i.cs",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\obj\\Debug\\net8.0-windows\\VIew\\mainpage.g.i.cs",
+              "RelativeToolTip": "diamond\\obj\\Debug\\net8.0-windows\\VIew\\mainpage.g.i.cs",
+              "ViewState": "AQIAAGgAAAAAAAAAAAAYwHIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-22T12:16:36.714Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Resources.resx",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\Properties\\Resources.resx",
+              "RelativeDocumentMoniker": "diamond\\Properties\\Resources.resx",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\Properties\\Resources.resx",
+              "RelativeToolTip": "diamond\\Properties\\Resources.resx",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2024-07-22T12:16:06.816Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "diamond",
+              "DocumentMoniker": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\diamond.csproj",
+              "RelativeDocumentMoniker": "diamond\\diamond.csproj",
+              "ToolTip": "C:\\Users\\angha\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\diamond\\diamond\\diamond.csproj",
+              "RelativeToolTip": "diamond\\diamond.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-07-22T12:16:08.73Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

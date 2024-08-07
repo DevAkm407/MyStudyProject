@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="diamond.VIew.diaprice"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:diamond.VIew"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="800"
+      >
+
+    <Grid Background="MintCream">
+        <TextBox x:Name="carat" HorizontalAlignment="Left" Margin="6,415,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Panel.ZIndex="1" Text="{Binding DiaCarat, Mode=TwoWay}"/>
+        <TextBlock HorizontalAlignment="Left" Margin="6,382,0,0" TextWrapping="Wrap" Text="carat" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="164,382,0,0" TextWrapping="Wrap" Text="color" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="332,382,0,0" TextWrapping="Wrap" Text="clarity" VerticalAlignment="Top"/>
+        <Button x:Name="btn" Content="확인하기" FontSize="20" FontFamily="{StaticResource Mountain Rabbit}" HorizontalAlignment="Left" Margin="524,415,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.459,-0.601" BorderBrush="{x:Null}" Command="{Binding AddModelData}" CommandParameter="{Binding ElementName=sql}">
+            <Button.Background>
+                <ImageBrush ImageSource="/Resources/blabel.png" Stretch="Fill"/>
+            </Button.Background>
+        </Button>
+        <ComboBox x:Name="color" HorizontalAlignment="Left" Margin="144,415,0,0" VerticalAlignment="Top" Width="120"  ItemsSource="{Binding DiaColor}" SelectedItem="{Binding Selected_DiaColor,Mode=TwoWay}" Panel.ZIndex="1" />
+        <ComboBox x:Name="clarity" HorizontalAlignment="Left" Margin="302,415,0,0" VerticalAlignment="Top" Width="120" ItemsSource="{Binding DiaClarity}" SelectedItem="{Binding Selected_DiaClarity,Mode=TwoWay}" Panel.ZIndex="1"/>
+
+        <Button Content="뒤로가기" FontSize="10" FontFamily="{StaticResource Mountain Rabbit}" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.522,0.041" Height="25" Width="58" BorderBrush="{x:Null}" Command="{Binding BackCommand}">
+            <Button.Background>
+                <ImageBrush ImageSource="/Resources/purple-button.png"/>
+            </Button.Background>
+        </Button>
+        <ListView x:Name="sql" Margin="0,104,303,139">
+            <ListView.View>
+                <GridView AllowsColumnReorder="True">
+                    <GridViewColumn Header="이미지" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Width="60" Height="60" Source="{Binding Img,Mode=OneWay}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="가격" DisplayMemberBinding="{Binding Price,Mode=OneWay}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>
