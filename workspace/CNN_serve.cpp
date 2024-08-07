@@ -68,7 +68,7 @@ unordered_map<int,string> clnt_aka;//소켓->이름
 unordered_map<string,int> waitqna;//고객이름->소켓
 unordered_map<string,int> goqna;//cs이름->소켓
 unordered_map<string,int> csonline;//cs들이 로그인하면 저장좀해야겠으
-unordered_map<string,string(*)(string,int)> theyfun;
+unordered_map<string,string(*)(string,int)> theyfun; // 프로토콜 요청 함수 모음 딕셔너리
 unordered_multimap<string,string> fileDriver;//파일을 위한 대화내용 연결 딕셔너리
 pthread_mutex_t mutx;
 
@@ -81,9 +81,9 @@ string usemoneydata(string msg,int sock);
 queue<int> modelQueue; //파이썬 클라이언트가 처리할 큐
 vector<vector<uchar>> diaData; //파이썬 클라이언트에게 보낼 프로토콜을 담은 백터
 unordered_map<int,string> User_name_sock;//소켓 번호로 유저 소켓번호 찾기
-string Sign_UP(string msg,int sock);
-string sendimg(string msg,int sock);
-string history(string msg,int sock);
+string Sign_UP(string msg,int sock); //로그인 함수 사용X
+string sendimg(string msg,int sock); //이미지 전송함수
+string history(string msg,int sock); //DB데이터 전송함수
 int main(int argc,char *argv[])
 {
     signal(SIGPIPE,SIG_IGN);
@@ -117,10 +117,10 @@ int main(int argc,char *argv[])
     serv_adr.sin_addr.s_addr=htonl(INADDR_ANY);
     serv_adr.sin_port=htons(atoi("10001"));
 
-    theyfun.insert(pair<string,string(*)(string,int)>("이미지전송",getimg));
-    theyfun.insert(pair<string,string(*)(string,int)>("life is short",ThePython));
-    theyfun.insert(pair<string,string(*)(string,int)>("이미지로그",sendimg));
-    theyfun.insert(pair<string,string(*)(string,int)>("데이터요청",history));
+    theyfun.insert(pair<string,string(*)(string,int)>("이미지전송",getimg)); //이미지 전송을 위한 프로토콜
+    theyfun.insert(pair<string,string(*)(string,int)>("life is short",ThePython));//파이썬 클라이언트가 접속했을때 요청대기 상태로만드는 프로토콜
+    theyfun.insert(pair<string,string(*)(string,int)>("이미지로그",sendimg));//저장된 이미지를 다시 클라이언트로 보내주는 프로토콜
+    theyfun.insert(pair<string,string(*)(string,int)>("데이터요청",history));//DB에 저장된 데이터를 클라이언트로 보내주는 프로토콜
     if(bind(serv_sock,(sockaddr*)&serv_adr,sizeof(serv_adr)))
         error_handling("bind() error");
     if(listen(serv_sock,5)==-1)
@@ -160,7 +160,6 @@ void* handle_clnt(void* arg)
 {
     int clnt_sock=*((int*)arg);
     int i;
-    int* status=new int;
     int * str_len=new int;
     int* login=new int;
     char* msg=new char[BUF_SZIE];
@@ -179,10 +178,7 @@ void* handle_clnt(void* arg)
     while ((*str_len=recv(clnt_sock,msg,BUF_SZIE,0))!=0)
     {                 
         msg[*str_len]=0;
-        mymsg=msg;
-        if(*status==1){
-            continue;
-        }        
+        mymsg=msg;   
         chatprotocol(mymsg,clnt_sock);
         memset(msg,0,BUF_SZIE);
         // puts(msg);
@@ -201,7 +197,7 @@ void* handle_clnt(void* arg)
     iter=waitqna.find(*aka);
     //딕셔너리 키 벨류 iter->first 키 iter->second 벨류
 
-    
+    //모든 딕셔너리에 해당 클라이언트 제거
     if(iter!=waitqna.end())
     {
         waitqna.erase(iter->first);
@@ -219,7 +215,7 @@ void* handle_clnt(void* arg)
         clnt_aka.erase(clnt_sock);
     }
 
-    pthread_mutex_unlock(&mutx);//모든 정렬이 끝나고나서 unlock
+    pthread_mutex_unlock(&mutx);//모든 정리가 끝나고나서 unlock
     clnt_fid.erase(*login);
     delete str_len;
     delete login;
@@ -230,7 +226,7 @@ void* handle_clnt(void* arg)
 
 
 
-void chatprotocol(string msg,int sock)
+void chatprotocol(string msg,int sock) //프로토콜 핸들러
 {
   
    try{
@@ -241,10 +237,10 @@ void chatprotocol(string msg,int sock)
    puts(j["protocol"].dump().c_str());
    if(iter!=theyfun.end()){
         k=iter->second(msg,sock);   
-   if(k.compare("X")!=0)
+   if(k.compare("X")!=0) //함수 반환 값이 X가아니면 반환된 스트링 전송
         snedVectorMsg(k,sock);
    }
-   else if(k.compare("X")==0)
+   else if(k.compare("X")==0) // X 면 잘 실행은 되었는지 확인
    {
      puts("문제없음");
    }
@@ -265,9 +261,9 @@ void chatprotocol(string msg,int sock)
 // json j=json::parse(msg);
 // reciveimdata.emplace_back(j["data"].dump());
 
-string getimg(string msg,int sock)
+string getimg(string msg,int sock) // 이미지를 OPencv를 이용하여 decoding
 {
-    ostringstream oss;
+    //ostringstream oss;
     json j;
     uchar* buffer = new uchar[BUF_SZIE];
     int len;
@@ -296,7 +292,7 @@ string getimg(string msg,int sock)
     }
     catch(const json::exception& e)
     {
-         for (int i = 0; i <len; i++)
+         for (int i = 0; i <len; i++) //이미지 데이터 수집
         {
             imgvec.push_back(buffer[i]); 
         }
@@ -326,7 +322,7 @@ string ThePython(string msg,int sock) // 큐에 대기중인 클라이언트소�
     
     while (true)
     {   usleep(10000);
-        if(modelQueue.empty())
+        if(modelQueue.empty()) //큐가 비었는지 풀링으로 확인
             continue;
         puts("되나?");
         procesSocket= modelQueue.front();
@@ -387,7 +383,7 @@ string sendimg(string msg,int sock)
     vector<uchar> decoingdata;
     cv::imencode(".png",img,decoingdata);
     uchar* imgbuf= new uchar[decoingdata.size()];
-    for (int i = 0; i < decoingdata.size(); i++)
+    for (int i = 0; i < decoingdata.size(); i++) // 이미지 전송을 위해서 vector data를 버퍼에 담기
     {
         imgbuf[i]=decoingdata[i];
     }
@@ -398,6 +394,7 @@ string sendimg(string msg,int sock)
     // char* buf = new char[BUF_SZIE];
     // done.copy(buf,done.length());
     // write(sock,buf,done.length());
+    delete imgbuf; //사용후 제거
     return "X";
 }
 
@@ -410,7 +407,7 @@ string sendData(string msg,int sock)
     return flowerdata;
 }
 
-string saveimg(vector<uchar> imgdata)
+string saveimg(vector<uchar> imgdata) //받은 이미지를 로컬에 저장
 {
     try{
     Dbim dbim;  
@@ -423,8 +420,8 @@ string saveimg(vector<uchar> imgdata)
     localtime_r(&curTime,PLocal);
     oss2<<PLocal->tm_year+1900<<PLocal->tm_mon +1<<PLocal->tm_mday<<PLocal->tm_hour
     <<PLocal->tm_min<<PLocal->tm_sec;  
-    string filename="/home/lms/test/myc-1/ImageFolder/"+oss2.str()+".png";
-    if(cv::imwrite(filename,img))
+    string filename="/home/lms/test/myc-1/ImageFolder/"+oss2.str()+".png"; //시간을 이름으로 사용
+    if(cv::imwrite(filename,img)) //imwrite는 반환값으로 성공여부를 반환함
     {
 
         puts(dbim.savepath(filename).c_str());
@@ -441,7 +438,7 @@ string saveimg(vector<uchar> imgdata)
 }
 
 
-void snedVectorMsg(string msg,int sock)
+void snedVectorMsg(string msg,int sock) //크기만큼만 전송
 {
     int k=msg.length();
     char* vchar= new char[k+1];
